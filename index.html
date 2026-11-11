@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Évaluation · Déclaration TVA (partie 1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f172a;
+  --navy-light: #1e293b;
+  --slate: #334155;
+  --slate-mid: #64748b;
+  --slate-light: #94a3b8;
+  --blue: #2563eb;
+  --blue-light: #3b82f6;
+  --blue-pale: #dbeafe;
+  --blue-bg: #eff6ff;
+  --green: #16a34a;
+  --green-pale: #dcfce7;
+  --red: #dc2626;
+  --red-pale: #fee2e2;
+  --orange: #ea580c;
+  --orange-pale: #fff7ed;
+  --white: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-body); background: var(--gray-50); color: var(--navy); font-size: 15px; line-height: 1.5; min-height: 100vh; }
+button, input { font-family: inherit; }
+[hidden] { display: none !important; }
+
+/* ---------- En-tête ---------- */
+.app-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.97); border-bottom: 1px solid var(--gray-200); }
+.hdr-inner { max-width: 1360px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 16px; }
+.hdr-left { min-width: 0; }
+.hdr-title { font-weight: 800; font-size: 14px; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hdr-email { font-size: 12px; color: var(--slate-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hdr-timer { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--navy); background: var(--gray-100); border: 1px solid var(--gray-200); padding: 4px 12px; border-radius: 999px; flex: 0 0 auto; }
+.progress { height: 4px; background: var(--gray-200); }
+.progress-fill { height: 100%; width: 0; background: var(--blue); transition: width .35s ease; }
+
+/* ---------- Écrans ---------- */
+.screen { display: none; padding: 26px 16px 72px; }
+.screen.active { display: block; }
+.container { max-width: 880px; margin: 0 auto; }
+.container.container-wide { max-width: 1360px; }
+
+.login-card { max-width: 580px; margin: 3vh auto 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 16px; box-shadow: var(--shadow-lg); padding: 30px 28px; }
+.icon-badge { width: 56px; height: 56px; border-radius: 14px; background: var(--blue-bg); display: grid; place-items: center; font-size: 28px; margin-bottom: 14px; }
+.eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--blue); }
+.login-card h1, .login-card h2 { font-size: 25px; line-height: 1.2; margin: 6px 0; font-weight: 800; letter-spacing: -.01em; }
+.subtitle { color: var(--slate-mid); font-size: 14.5px; }
+.rules { list-style: none; margin: 20px 0 22px; display: grid; gap: 9px; }
+.rules li { position: relative; padding-left: 26px; font-size: 14px; color: var(--slate); }
+.rules li::before { content: ''; position: absolute; left: 6px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--blue-light); }
+.field-label { display: block; font-size: 13px; font-weight: 700; color: var(--slate); margin-bottom: 6px; }
+.email-input { width: 100%; padding: 12px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 15px; color: var(--navy); outline: none; background: var(--white); }
+.email-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-pale); }
+.login-error { min-height: 22px; margin: 8px 0 4px; color: var(--red); font-size: 13.5px; font-weight: 600; }
+.login-card .btn-primary { width: 100%; }
+
+/* ---------- Boutons ---------- */
+.btn-primary { background: var(--blue); color: #fff; border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 700; font-size: 15px; cursor: pointer; transition: background .15s ease; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-primary:disabled { background: var(--gray-300); cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--slate-mid); border: 1.5px solid var(--gray-300); border-radius: 10px; padding: 11px 16px; font-weight: 600; font-size: 14px; cursor: pointer; }
+.btn-ghost:hover { border-color: var(--slate-light); color: var(--slate); }
+.btn-ghost.armed { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+
+/* ---------- Carte de question ---------- */
+.part-head { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--slate-mid); margin-bottom: 12px; }
+.part-pill { background: var(--navy); color: #fff; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+.question-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 14px; box-shadow: var(--shadow-md); padding: 22px 24px 24px; min-width: 0; }
+.q-context { background: var(--blue-bg); border: 1px solid var(--blue-pale); color: var(--navy-light); border-radius: 10px; padding: 10px 14px; font-size: 14px; margin-bottom: 16px; }
+.q-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--slate-mid); font-weight: 600; margin-bottom: 10px; }
+.q-badge { background: var(--blue-pale); color: #1e40af; font-weight: 800; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; padding: 3px 9px; border-radius: 6px; }
+.q-pts { color: var(--slate-light); font-weight: 600; }
+.q-text { font-size: 17px; font-weight: 700; line-height: 1.45; color: var(--navy); }
+.q-sub { margin-top: 6px; font-size: 13.5px; color: var(--slate-mid); }
+.q-data { margin: 4px 0 14px; }
+.q-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+.q-actions .btn-ghost { margin-left: auto; }
+.feedback { margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-weight: 700; font-size: 14.5px; }
+.feedback.ok { background: var(--green-pale); color: #166534; border: 1px solid #86efac; }
+.feedback.ko { background: var(--red-pale); color: #991b1b; border: 1px solid #fca5a5; }
+.feedback.neutral { background: var(--gray-100); color: var(--slate); border: 1px solid var(--gray-200); }
+
+/* ---------- QCM ---------- */
+.qcm-list { display: grid; gap: 10px; margin-top: 16px; }
+.qcm-option { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; background: var(--white); border: 2px solid var(--gray-200); border-radius: 10px; padding: 12px 14px; font-size: 15px; color: var(--navy); cursor: pointer; transition: border-color .12s ease, background .12s ease; }
+.qcm-option:hover { border-color: var(--blue-light); }
+.qcm-letter { flex: 0 0 28px; height: 28px; border-radius: 8px; background: var(--gray-100); color: var(--slate); font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+.qcm-text { padding-top: 2px; }
+.qcm-option.selected { border-color: var(--blue); background: var(--blue-bg); }
+.qcm-option.selected .qcm-letter { background: var(--blue); color: #fff; }
+.qcm-option.correct { border-color: var(--green); background: var(--green-pale); }
+.qcm-option.correct .qcm-letter { background: var(--green); color: #fff; }
+.qcm-option.incorrect { border-color: var(--red); background: var(--red-pale); }
+.qcm-option.incorrect .qcm-letter { background: var(--red); color: #fff; }
+.qcm-option.locked { cursor: default; }
+.qcm-option.locked:not(.correct):not(.incorrect):not(.selected):hover { border-color: var(--gray-200); }
+
+/* ---------- Saisie numérique ---------- */
+.num-wrap { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+.num-input, .amount-input { width: 220px; max-width: 100%; padding: 11px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: var(--font-mono); font-size: 16px; text-align: right; color: var(--navy); outline: none; }
+.num-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-pale); }
+.num-input:disabled { background: var(--gray-50); color: var(--slate); }
+.num-unit { font-weight: 700; color: var(--slate); }
+.entry-hint { margin-top: 8px; font-size: 12.5px; color: var(--slate-mid); }
+.bal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bal { border-radius: 10px; padding: 10px 14px; border: 1.5px solid; display: grid; gap: 2px; }
+.bal span { font-size: 13px; font-weight: 700; }
+.bal b { font-family: var(--font-mono); font-size: 18px; }
+.bal em { font-style: normal; font-size: 12px; opacity: .8; }
+.bal-d { border-color: #3b82f6; background: #eef4ff; color: #1e40af; }
+.bal-c { border-color: #e11d48; background: #fdf2f4; color: #9f1239; }
+
+/* ---------- Étiquettes : tri en colonnes et appariement ---------- */
+.reserve { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border: 1.5px dashed var(--gray-300); border-radius: 10px; background: var(--gray-50); min-height: 58px; margin: 16px 0 14px; }
+.reserve-empty { color: var(--slate-light); font-size: 13px; font-style: italic; align-self: center; }
+.tag { background: var(--white); border: 1.5px solid var(--gray-300); border-radius: 8px; padding: 7px 11px; font-size: 13.5px; line-height: 1.35; cursor: pointer; user-select: none; box-shadow: var(--shadow-sm); transition: border-color .12s ease, background .12s ease, box-shadow .12s ease; }
+.tag:hover { border-color: var(--blue-light); }
+.tag.picked { border-color: var(--blue); background: var(--blue-bg); box-shadow: 0 0 0 3px var(--blue-pale); }
+.tag-grid { font-family: var(--font-mono); font-weight: 600; font-size: 14px; min-width: 54px; text-align: center; }
+.is-locked .tag, .is-locked .bin, .is-locked .pair-row { cursor: default; }
+.bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.bin { border: 2px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; transition: border-color .12s ease, background .12s ease; background: var(--white); }
+.bin.droppable { border-color: var(--blue-light); border-style: dashed; cursor: pointer; }
+.bin.droppable:hover { background: var(--blue-bg); }
+.bin-title { background: var(--gray-100); padding: 10px 12px; font-size: 13px; font-weight: 800; color: var(--navy); text-align: center; }
+.bin-drop { padding: 10px; min-height: 92px; flex: 1 1 auto; display: flex; flex-direction: column; gap: 7px; cursor: pointer; }
+.bin-empty { color: var(--slate-light); font-size: 13px; font-style: italic; text-align: center; margin: auto 0; pointer-events: none; }
+.pairs { display: grid; gap: 8px; }
+.pair-row { display: grid; grid-template-columns: 1fr 96px; gap: 12px; align-items: center; border: 2px solid var(--gray-200); border-radius: 10px; padding: 10px 12px; background: var(--white); transition: border-color .12s ease, background .12s ease; }
+.pair-row.droppable { border-color: var(--blue-light); border-style: dashed; cursor: pointer; }
+.pair-row.droppable:hover { background: var(--blue-bg); }
+.pair-lbl { font-size: 14px; color: var(--navy); }
+.pair-slot { min-height: 40px; border: 1.5px dashed var(--gray-300); border-radius: 8px; display: grid; place-items: center; background: var(--gray-50); }
+.pair-slot.filled { border-style: solid; background: var(--white); }
+.slot-empty { color: var(--slate-light); font-weight: 800; pointer-events: none; }
+
+/* ---------- Sélection multiple ---------- */
+.multi-list { display: grid; gap: 8px; margin-top: 16px; }
+.multi-option { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; background: var(--white); border: 2px solid var(--gray-200); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; color: var(--navy); cursor: pointer; transition: border-color .12s ease, background .12s ease; }
+.multi-option:hover { border-color: var(--blue-light); }
+.mbox { flex: 0 0 20px; height: 20px; border: 2px solid var(--gray-300); border-radius: 5px; margin-top: 1px; display: grid; place-items: center; background: var(--white); }
+.multi-option.checked { border-color: var(--blue); background: var(--blue-bg); }
+.multi-option.checked .mbox { background: var(--blue); border-color: var(--blue); }
+.multi-option.checked .mbox::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 800; line-height: 1; }
+.is-locked .multi-option, .is-locked .seg { cursor: default; }
+
+/* ---------- Chasse aux erreurs ---------- */
+.doc { margin-top: 16px; background: #fffdf6; border: 1px solid #eadfc4; border-radius: 12px; padding: 10px 12px 12px; box-shadow: var(--shadow-sm); }
+.doc-head { font-size: 12px; font-weight: 800; color: #8a6d2b; text-transform: uppercase; letter-spacing: .06em; padding: 4px 6px 8px; border-bottom: 1px dashed #eadfc4; margin-bottom: 6px; }
+.seg { display: flex; gap: 10px; width: 100%; text-align: left; background: transparent; border: 1.5px solid transparent; border-radius: 8px; padding: 8px; font-size: 14.5px; line-height: 1.45; color: var(--navy); cursor: pointer; }
+.seg:hover { background: #fff6dc; }
+.seg-n { flex: 0 0 24px; height: 24px; border-radius: 50%; background: #efe6cc; color: #7a5d17; font-size: 12px; font-weight: 800; display: grid; place-items: center; margin-top: 1px; }
+.seg.flagged { background: #fee2e2; border-color: #fca5a5; }
+.seg.flagged .seg-n { background: var(--red); color: #fff; }
+.seg.flagged .seg-t { text-decoration: underline wavy #ef4444; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+/* ---------- Dossier (exercice 2) ---------- */
+.ex-layout.with-dossier { display: grid; grid-template-columns: minmax(400px, 520px) minmax(0, 1fr); gap: 20px; align-items: start; }
+.dossier { position: sticky; top: 70px; max-height: calc(100vh - 86px); overflow: auto; background: var(--white); border: 1px solid var(--gray-200); border-radius: 14px; padding: 16px 16px 12px; box-shadow: var(--shadow-md); }
+.dossier-kicker { font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--blue); }
+.dossier-title { font-size: 20px; font-weight: 800; margin-top: 2px; }
+.dossier-sub { font-size: 12.5px; color: var(--slate-mid); }
+.dossier-p { font-size: 13.5px; margin: 10px 0 4px; color: var(--slate); }
+.dtable-title { font-size: 12.5px; font-weight: 800; color: var(--navy-light); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+.dtable-wrap { overflow-x: auto; }
+.dtable { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.dtable th { background: var(--navy-light); color: #fff; text-align: left; padding: 6px; font-weight: 700; white-space: nowrap; }
+.dtable th:first-child { border-radius: 6px 0 0 0; }
+.dtable th:last-child { border-radius: 0 6px 0 0; }
+.dtable td { border-bottom: 1px solid var(--gray-200); padding: 6px 5px; vertical-align: top; }
+.dtable td.n { font-weight: 700; color: var(--slate-mid); }
+.dtable .r { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+.dtable td.gr { min-width: 92px; }
+.g { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; border: 1.3px solid var(--slate-light); border-radius: 5px; padding: 0 4px; margin: 1px 3px 1px 0; white-space: nowrap; background: var(--white); }
+.g-iv { border-color: #e11d48; color: #be123c; }
+.g-v { border-color: #3b82f6; color: #1d4ed8; }
+.dnote { font-size: 12px; color: var(--slate-mid); margin-top: 10px; }
+
+/* ---------- Écran Intervat ---------- */
+.iv-window { margin-top: 16px; border: 1px solid var(--gray-300); border-radius: 12px; overflow: hidden; background: var(--white); box-shadow: var(--shadow-md); }
+.iv-bar { display: flex; align-items: center; gap: 12px; background: var(--gray-100); border-bottom: 1px solid var(--gray-200); padding: 8px 12px; }
+.iv-dots { display: flex; gap: 5px; }
+.iv-dots i { display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--gray-300); }
+.iv-url { flex: 1; min-width: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 4px 10px; font-size: 12.5px; color: var(--slate-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iv-head { display: flex; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--gray-200); }
+.iv-h1 { font-weight: 800; font-size: 16px; }
+.iv-h2, .iv-hr { font-size: 13px; color: var(--slate-mid); }
+.iv-hr { text-align: right; }
+.iv-steps { display: flex; gap: 6px 14px; flex-wrap: wrap; justify-content: space-between; padding: 9px 16px; border-bottom: 1px solid var(--gray-200); background: var(--gray-50); font-size: 12.5px; color: var(--slate-mid); }
+.iv-steps span { display: inline-flex; align-items: center; gap: 5px; }
+.iv-steps b { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--slate-light); font-size: 11px; }
+.iv-steps .on { color: var(--navy); font-weight: 700; }
+.iv-steps .on b { background: var(--navy); border-color: var(--navy); color: #fff; }
+.iv-body { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; padding: 12px 16px 6px; }
+.iv-col { min-width: 0; }
+.iv-cadre { margin-bottom: 12px; border-radius: 8px; }
+.iv-cadre.iv-edit { outline: 2px solid var(--blue-pale); outline-offset: 4px; }
+.iv-ctitle { font-weight: 800; font-size: 13.5px; padding: 6px 10px; border-left: 4px solid var(--slate-light); background: var(--gray-100); border-radius: 4px; margin-bottom: 4px; }
+.iv-t-r { border-left-color: #be123c; background: #fdf2f4; }
+.iv-t-b { border-left-color: #1d4ed8; background: #eef4ff; }
+.iv-t-a { border-left-color: #a16207; background: #fbf5ea; }
+.iv-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) 122px; align-items: center; gap: 8px; padding: 3px 0; border-bottom: 1px solid var(--gray-100); }
+.iv-badge { font-family: var(--font-mono); font-weight: 600; font-size: 13px; text-align: center; border: 1.5px solid var(--slate-light); border-radius: 6px; padding: 1px 0; color: var(--navy); background: var(--white); }
+.iv-b-r { border-color: #e11d48; color: #be123c; }
+.iv-b-b { border-color: #3b82f6; color: #1d4ed8; }
+.iv-b-a { border-color: #ca8a04; color: #a16207; }
+.iv-lbl { font-size: 13px; color: var(--slate); line-height: 1.3; min-width: 0; overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; }
+.iv-total .iv-lbl { font-weight: 800; color: var(--navy); }
+.iv-input { width: 100%; font-family: var(--font-mono); font-size: 13.5px; text-align: right; padding: 5px 8px; border: 1.5px dashed var(--blue-light); border-radius: 6px; background: var(--white); color: var(--navy); outline: none; }
+.iv-input:focus { border-style: solid; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-pale); }
+.iv-input:disabled { background: var(--gray-50); border-style: solid; border-color: var(--gray-200); color: var(--slate); }
+.iv-val { display: block; font-family: var(--font-mono); font-size: 13.5px; text-align: right; padding: 5px 8px; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--gray-50); min-height: 30px; color: var(--slate); overflow: hidden; }
+.iv-future { opacity: .45; }
+.iv-foot { padding: 10px 16px; border-top: 1px solid var(--gray-200); font-size: 12.5px; color: var(--slate-mid); background: var(--gray-50); }
+
+/* ---------- Synthèse ---------- */
+.summary-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 16px; box-shadow: var(--shadow-md); padding: 26px 24px; margin-bottom: 18px; }
+.summary-card h2 { font-size: 24px; font-weight: 800; margin: 4px 0 12px; }
+.summary-card h3 { font-size: 18px; font-weight: 800; }
+.muted { color: var(--slate-mid); font-size: 13.5px; margin: 2px 0 14px; }
+.score-hero { display: flex; align-items: baseline; gap: 8px; }
+.score-value { font-size: 54px; font-weight: 800; line-height: 1; letter-spacing: -.02em; color: var(--blue); }
+.score-max { font-size: 22px; font-weight: 700; color: var(--slate-mid); }
+.score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+.score-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px 12px; }
+.score-item .label { font-size: 12px; font-weight: 700; color: var(--slate-mid); text-transform: uppercase; letter-spacing: .04em; }
+.score-item .value { font-size: 19px; font-weight: 800; font-family: var(--font-mono); }
+.send-status { margin-top: 16px; font-size: 13.5px; font-weight: 600; padding: 10px 12px; border-radius: 10px; }
+.send-status.pending { background: var(--orange-pale); color: #9a3412; }
+.send-status.done { background: var(--green-pale); color: #166534; }
+.comp-row { padding: 12px 0; border-top: 1px solid var(--gray-100); }
+.comp-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.comp-code { font-family: var(--font-mono); font-weight: 600; font-size: 12px; background: var(--gray-100); border-radius: 6px; padding: 2px 7px; color: var(--slate); }
+.comp-lib { flex: 1 1 260px; font-weight: 700; font-size: 14.5px; }
+.lv { font-size: 12.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.lv.lv-ok { background: var(--green-pale); color: #166534; }
+.lv.lv-mid { background: var(--orange-pale); color: #9a3412; border: 1px solid #fed7aa; }
+.lv.lv-ko { background: var(--red-pale); color: #991b1b; }
+.lv.lv-na { background: var(--gray-100); color: var(--slate-mid); }
+.comp-bar { height: 8px; background: var(--gray-100); border-radius: 999px; margin: 8px 0 6px; overflow: hidden; }
+.comp-fill { height: 100%; border-radius: 999px; }
+.comp-fill.lv-ok { background: var(--green); }
+.comp-fill.lv-mid { background: var(--orange); }
+.comp-fill.lv-ko { background: var(--red); }
+.comp-fill.lv-na { background: var(--slate-light); }
+.comp-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--slate-mid); }
+.prio { margin-top: 18px; background: var(--blue-bg); border: 1px solid var(--blue-pale); border-radius: 12px; padding: 14px 16px; }
+.prio h4 { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+.prio ol { padding-left: 20px; display: grid; gap: 8px; font-size: 14px; }
+.prio li span { color: var(--slate-mid); font-size: 13px; }
+
+@media (max-width: 1180px) {
+  .ex-layout.with-dossier { grid-template-columns: minmax(0, 1fr); }
+  .dossier { position: static; max-height: none; }
+}
+@media (max-width: 760px) {
+  .iv-body { grid-template-columns: minmax(0, 1fr); }
+  .bins { grid-template-columns: 1fr; }
+  .question-card { padding: 18px 16px 20px; }
+  .login-card { padding: 24px 18px; }
+  .q-actions .btn-ghost { margin-left: 0; }
+  .score-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .bal-grid { grid-template-columns: 1fr; }
+  .pair-row { grid-template-columns: 1fr 76px; }
+  .iv-row { grid-template-columns: 38px minmax(0, 1fr) 104px; }
+  .iv-hr { text-align: left; }
+  .score-value { font-size: 44px; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header" id="appHeader" hidden>
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <div class="hdr-title">Déclaration TVA · partie 1</div>
+      <div class="hdr-email" id="hdrEmail"></div>
+    </div>
+    <span class="hdr-timer" id="timer">00:00:00</span>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+</header>
+
+<!-- ====== SCREEN: LOGIN ====== -->
+<div class="screen active" id="screenLogin">
+  <div class="login-card">
+    <div class="icon-badge">🧾</div>
+    <div class="eyebrow">Évaluation · 6e Technicien en comptabilité</div>
+    <h1>La déclaration périodique à la TVA</h1>
+    <p class="subtitle">Partie 1 du cours « La TVA : déclaration et centralisation »</p>
+    <ul class="rules">
+      <li><strong>Théorie</strong> : 10 questions à choix multiple, 1 point chacune.</li>
+      <li><strong>Exercices</strong> : 10 questions, 30 points, dont un écran Intervat à compléter.</li>
+      <li>QCM, sélection multiple et chasse aux erreurs : <strong>une seule tentative</strong>. Autres questions : deux tentatives.</li>
+      <li>Tu ne peux pas revenir en arrière. Ne recharge pas la page pendant l'évaluation.</li>
+      <li>Durée prévue : environ 45 minutes.</li>
+    </ul>
+    <label class="field-label" for="emailInput">Ton adresse e-mail scolaire</label>
+    <input type="email" class="email-input" id="emailInput" placeholder="prenom.nom@…" autocomplete="email" spellcheck="false">
+    <div class="login-error" id="loginError"></div>
+    <button id="btnLogin" class="btn-primary" onclick="handleLogin()">Commencer l'évaluation</button>
+  </div>
+</div>
+
+<!-- ====== SCREEN: DONE (déjà réalisée) ====== -->
+<div class="screen" id="screenDone">
+  <div class="login-card">
+    <div class="icon-badge">✅</div>
+    <h2>Évaluation déjà réalisée</h2>
+    <p class="subtitle">Tu as déjà terminé cette évaluation : une seule participation est possible.<br>
+    Si tu penses qu'il s'agit d'une erreur, parles-en à ton professeur.</p>
+  </div>
+</div>
+
+<!-- ====== SCREEN: LOCKED (Verrou fermé) ====== -->
+<div class="screen" id="screenLocked">
+  <div class="login-card">
+    <div class="icon-badge">🔒</div>
+    <h2>Évaluation non disponible</h2>
+    <p class="subtitle">L'évaluation n'est pas ouverte actuellement.<br>
+    Attends les consignes de ton professeur.</p>
+  </div>
+</div>
+
+<!-- ====== SCREEN: QUIZ ====== -->
+<div class="screen" id="screenQuiz">
+  <div class="container">
+    <div class="part-head"><span class="part-pill">Partie 1</span> Théorie · 10 questions · 10 points</div>
+    <div class="question-card" id="quizCard"></div>
+  </div>
+</div>
+
+<!-- ====== SCREEN: TRANSITION ====== -->
+<div class="screen" id="screenTransition">
+  <div class="login-card">
+    <div class="icon-badge">✍️</div>
+    <div class="eyebrow">Théorie terminée</div>
+    <h2>Partie 2 · Exercices</h2>
+    <p class="subtitle">10 questions · 30 points</p>
+    <ul class="rules">
+      <li><strong>Exercice 1</strong> : six questions sur les règles de la déclaration.</li>
+      <li><strong>Exercice 2</strong> : la déclaration complète d'une entreprise, à encoder dans un écran Intervat.</li>
+      <li>QCM, sélection multiple et chasse aux erreurs : une seule tentative. Autres questions : deux tentatives.</li>
+      <li>Tu peux passer une question, mais tu ne pourras plus y revenir.</li>
+    </ul>
+    <button class="btn-primary" id="btnStartEx" onclick="startExercises()">Commencer les exercices →</button>
+  </div>
+</div>
+
+<!-- ====== SCREEN: EXERCISE ====== -->
+<div class="screen" id="screenExercise">
+  <div class="container" id="exContainer"></div>
+</div>
+
+<!-- ====== SCREEN: SUMMARY ====== -->
+<div class="screen" id="screenSummary">
+  <div class="container">
+    <div class="summary-card">
+      <div class="eyebrow">Évaluation terminée</div>
+      <h2>Merci, tu as terminé !</h2>
+      <div class="score-hero">
+        <div class="score-value" id="totalScore">0</div>
+        <div class="score-max" id="totalMax">/ 40</div>
+      </div>
+      <div class="score-grid">
+        <div class="score-item"><div class="label">Théorie</div><div class="value" id="quizScore">0/10</div></div>
+        <div class="score-item"><div class="label">Exercices</div><div class="value" id="exScore">0/30</div></div>
+        <div class="score-item"><div class="label">Temps</div><div class="value" id="timeScore">00:00:00</div></div>
+      </div>
+      <div class="send-status pending" id="sendStatus">Envoi de tes réponses…</div>
+    </div>
+    <div class="summary-card">
+      <h3>Ton profil de compétences</h3>
+      <p class="muted">Ce profil décrit tes réponses à cette évaluation, compétence par compétence.</p>
+      <div id="compList"></div>
+      <div id="prioBox"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — Évaluation « Déclaration TVA — partie 1 »
+// ============================================================
+const CONFIG = {
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzff9KEtrF9aH2ajzRvpPmePXDjOzLeOjrqpxJRO5uSKsfAMlY24A39eWO2tXBvO-eu/exec',
+  APP_NAME: 'Déclaration TVA - Partie 1',
+  NB_QUIZ: 10,
+  NB_EXERCICES: 10,
+  POINTS_MAX: 40,
+  TENTATIVES_CHOIX: 1,   // qcm, multi, erreurs
+  TENTATIVES_MANIP: 2    // classer, pairs, schema, numeric, entry, impact, intervat
+};
+
+// Nombre de tentatives selon le type (cahier des charges, 3.3)
+const CHOIX = ['qcm', 'multi', 'erreurs'];
+const maxTentatives = ex => CHOIX.includes(ex.type)
+  ? CONFIG.TENTATIVES_CHOIX : CONFIG.TENTATIVES_MANIP;
+
+const STATE = {
+  email: '',
+  classe: '',
+  session: '',
+  timerInterval: null,
+  startTime: null,
+  elapsed: 0,
+  currentQuiz: 0,
+  currentEx: 0,
+  quizPoints: 0,
+  exPoints: 0,
+  quizAnswered: Array(CONFIG.NB_QUIZ).fill(false),
+  exAnswered: Array(CONFIG.NB_EXERCICES).fill(false),
+  exAttempts: Array(CONFIG.NB_EXERCICES).fill(0),
+  exBest: Array(CONFIG.NB_EXERCICES).fill(0),
+  exBestAttempt: Array(CONFIG.NB_EXERCICES).fill(0),
+  questionStartTime: 0,
+  quizStartTime: 0,
+  exStartTime: 0,
+  quizPick: null,
+  intervat: {},
+  comp: {},
+  running: false
+};
+
+let EXUI = { pick: null, place: {}, sel: [], qcmPick: null, locked: false };
+
+// ============================================================
+// RÉFÉRENTIEL DE COMPÉTENCES — codes I1 à I6, identiques aux
+// indicateurs de l'application d'entraînement « Partie 1 »
+// ============================================================
+const COMPETENCES = {
+  I1: {
+    libelle: "Choisir entre le régime mensuel et le régime trimestriel",
+    critere: "Connaître le cadre",
+    relire: "« Avant de commencer… » : les deux régimes"
+  },
+  I2: {
+    libelle: "Respecter les échéances et déposer la déclaration dans Intervat",
+    critere: "Connaître le cadre",
+    relire: "« La déclaration en ligne : Intervat » et le tableau des dates limites"
+  },
+  I3: {
+    libelle: "Classer une vente ou un achat dans la bonne grille",
+    critere: "Identifier / qualifier",
+    relire: "« Étape 1 · Les ventes (cadre II) » et « Étape 2 · Les achats (cadre III) »"
+  },
+  I4: {
+    libelle: "Traiter les notes de crédit et le report de perception",
+    critere: "Appliquer une procédure",
+    relire: "« Règle d'or du cadre II », « Le cadre III ne fonctionne pas comme le cadre II » et « Le report de perception ne coûte rien »"
+  },
+  I5: {
+    libelle: "Compléter l'écran Intervat : montants hors TVA et montants de TVA",
+    critere: "Calculer",
+    relire: "« La déclaration en un coup d'œil » et l'exemple résolu Mosaïk Design SRL"
+  },
+  I6: {
+    libelle: "Calculer le solde et l'inscrire en grille 71 ou 72",
+    critere: "Calculer",
+    relire: "« Étape 4 · Le solde (cadre VI) »"
+  }
+};
+
+// ============================================================
+// FORMULAIRE INTERVAT — libellés repris de l'écran du cours
+// ============================================================
+const INTERVAT_CADRES = [
+  {
+    id: "II",
+    titre: "Cadre II · Ventes (HTVA)",
+    col: 0,
+    tone: "n",
+    grilles: [
+      ["01", "Ventes à 6 %"],
+      ["02", "Ventes à 12 %"],
+      ["03", "Ventes à 21 %"],
+      ["45", "Cocontractant"],
+      ["46", "Livraisons intracommunautaires"],
+      ["47", "Exportations"],
+      ["48", "NC sur la grille 46"],
+      ["49", "NC autres ventes"]
+    ]
+  },
+  {
+    id: "III",
+    titre: "Cadre III · Achats (HTVA)",
+    col: 0,
+    tone: "n",
+    grilles: [
+      ["81", "Marchandises, matières"],
+      ["82", "Services, biens divers"],
+      ["83", "Investissements"],
+      ["84", "NC sur 86 et 88"],
+      ["85", "NC autres achats"],
+      ["86", "Acquisitions intracommunautaires"],
+      ["87", "Cocontractant, importations"],
+      ["88", "Services intracommunautaires"]
+    ]
+  },
+  {
+    id: "IV",
+    titre: "Cadre IV · Taxes dues",
+    col: 1,
+    tone: "r",
+    grilles: [
+      ["54", "TVA de 01 à 03"],
+      ["55", "TVA sur 86 et 88"],
+      ["56", "TVA sur 87"],
+      ["57", "TVA importations"],
+      ["63", "TVA NC reçues"],
+      ["XX", "Total cadre IV"]
+    ]
+  },
+  {
+    id: "V",
+    titre: "Cadre V · Taxes déductibles",
+    col: 1,
+    tone: "b",
+    grilles: [["59", "TVA déductible"], ["64", "TVA NC émises"], ["YY", "Total cadre V"]]
+  },
+  {
+    id: "VI",
+    titre: "Cadre VI · Solde",
+    col: 1,
+    tone: "a",
+    grilles: [["71", "Due à l'État"], ["72", "Due par l'État"]]
+  }
+];
+
+// ============================================================
+// LOGIN — touche Entrée dans le champ e-mail
+// ============================================================
+document.getElementById('emailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+
+// ============================================================
+// QUIZ DATA — 10 questions théoriques (chiffré AES-256-GCM)
+// ============================================================
+const QUIZ = [
+  {
+    id: "Q1",
+    text: "MNqUOP830EOD3BEQ.i9cHTGK9HFVfUkT6BB/D7+Ha85EkzlTNMB51iK+C0TX4r0PYGpqKWVFnHXUqzF/+Kyv4x+Tujir7wfC8saP6KUT4ssrXqR+WzjjNHRZhGO5ugHqfVqfNwbYPyLuuBV8fMWXlCxb2n4D12aSHwi+RDmZXdB/dQGJQEqgt9hA3jK+QtKBVrkJT0T3LktO+P/UdRRwrBekhSSyitlHgnV0=",
+    options: [
+      "JPngR9oi78XhYWP1.IsJSJZNtYOl8ElzpGdzwd+u18vzm/XHuTiFCRLQvHg7KjDzWRWSd162q",
+      "OaT/WTbIzFnvwt+g.1TD8z+K+FTNhKam7v3s1d6yUVaYUJhMgBNV89+looUwuBmd3AmGG",
+      "KCybrrmof02AJM9I.TKseiBA3AH9p8nP7UNMAwsyeYJ0Vt+fvQZyJ7Y/fyth4dD8c9r5vIclEmDqwww==",
+      "ZQSXm00C9VmEvQC+.uj41TARK8aOXcRxNSu9+KKtYDQUr62/OibnItxdNL8W6NbUmlKk="
+    ],
+    correct: 0,
+    points: 1,
+    comp: "I1"
+  },
+  {
+    id: "Q2",
+    text: "LWn0Pp2U4GjjE7pZ.PT3ByboyB4LERAZFx75R3NN2bvkTexEtiEw0CZ0rfz8uTFOPwHxcH0E92o7QJQSu5SYOtGbkT3UINuZlz/YlrJPaVVqO8OCiRe9t6xwh1zjrylysHi3GgRbWfA3OUZQ3KjpBC2G3rEaDLNCBWW44o3wOBfr9pgvmxjAODD0pFZsJpg/xdyowG3FF/4i94MRhM0uASo2cyoG8EIyvbzJhw3couDgFMNZKl5a5xCvmvmvT9aRI8gAAmUhia7DdSWnn2VK0atrHnTIsFk5WGwGQNSqm",
+    options: [
+      "+koKCxRcOQFGAYUH.ydFAxMfjFxEQ17ICqxma9N+DtdsfJeHxJqR1XFN2i6Z5u0DMBVgx9D8c7JYVphGE9sLliq+PRKG2k2kGA2P+8PND+ig5MtmNz/o9n//Ig/nFA5ideLdYRe7C1KOQvn5xARHQBt4+HZ1S5tQJ",
+      "G0fsbNkqiknzS2Rm.tyRDLU5P4AWK3d6lewZt2/LZaYs5tN4RRPdAU7m8vXR7E7gnRdD7hE5evTP+p4DFxJnhCiV++EV27UO6icM1sHXYSwX7ZmL7HT/kTDWG3gv3eputGNmAREf9bjwP5Pk=",
+      "IrthO+4UHQzhy2Jd.I5hueBjHAi0hJOvhd9zMF8OTHSXjg+189subcnWspMPNDuCaWZNmPYo2kcDzXSGZsOT32XKcJDfF/ELMJMwiGb/OWuU6vrDeQIaAO20cBqOWE8FaRzLNhMu0pv4Xe2myjpP5diM=",
+      "4nDC3pfbMqfn970m.RY7EOAiSIXW1/WGO+6Cfs522jdHyuOZV7NnEN/hKQQ8MrjwRCUIH/E/azojjaKz+SAlR8sP6gL/6mXr+Xt2SP4lqx9C2wD4l5c5ji0W5A8xKxD3fvsOJSFNUxsM8mHqN"
+    ],
+    correct: 0,
+    points: 1,
+    comp: "I1"
+  },
+  {
+    id: "Q3",
+    text: "BgXA5Bb1Nb5Icv6e.PvRs02gFqgK0+zQV+tyY1EzSAFNhg162A/hNbi4uQaqPxoXX3ktxmXoWivJJTnAmFFMRm29VjvI6w3Tenm9Idgk92jMHgmawMc/8oL/tLDMNY3ZEA6T9FCg6qaNvYDGMEELM1nWbvP+/egPN6Pj9Lk+pZE0z6f0vubQPnpCtZMXr3GjPa6rEY+cu/v6uFEdYKqcl6ccCKmBt1Pgoy5bAq7mWfxQgEb96FFv6ZnENV/SkUwg/9JcSpQ==",
+    options: [
+      "vNwkwIwlgTu7FS/+.Xxq48czohjrO3em1ieQ3P4oUT7beiOYUtIt1giJ+fq2BM9U=",
+      "O14xdpd2HNBTVEmR.5OUxFv9lJdJAtPnLRBUlc/AKTI7nmOp7/U95sCZdnhktnrl0Fg==",
+      "mBQZFzWrC2s4tWX8.bBaepwxMxiWyD0MECbqduyPG0nR7pPS+Cu35RCajM2EmISM=",
+      "DR22590senezy8kx.QSUI48k/I50vaPCKY+5CM9J4PmQ0sGhqHI5kwzMTzpqGSFc="
+    ],
+    correct: 3,
+    points: 1,
+    comp: "I2"
+  },
+  {
+    id: "Q4",
+    text: "nsup3yPQNbJ+y5VN.IQc3EQIX7iQfuQoJAFs/bJm8N6fbWWZJ18CyHPBngJdsDDFKF+FZkUA3cQV7nmewSMGJly+C0DEZ2z2vOGhj+D8RvwgX6CDmaN0XVWYkjvyvtWH7gWOYS9GR9ZRf",
+    options: [
+      "thZrGErlMhJ3ZmJv.KQMxnV/DcvFH3AaOiWnmCCzDyPd8mSu1YjLx5HF7aiX7ZfoDdMOXORAskB8R6dPS6im7L33OVUQEe7I+HhHvPzwqaRhM0Y0HfdTrmEtA",
+      "bN4ojKzhzeZEZrdy.A0hOMwtOgHx+1VLtqmtmr52ZSVnQejK8PIcWHVcwuhSKepWfS93Gw01GMk+d/b18ZzgvCLnbDzFUYqfE8r2JpLiXS4YPqmMz+gLK/SVVwZv/",
+      "OKYedxum5UneB/Ij.T6fgjOWU+pZmL353rjTU01aHseMkgLIUA9I+86BL5fkNVauytV8yW6WfKPETo7Cxof/GKWUr2fV4wHEtjtdOFDg/miCp1i1ChdrbZVQ=",
+      "w96gbsvY6+kZBoaQ.f81LuGo04e6xO8PcIo6pLuLdDENA1hMHEhlGlzOAO9JlqgRYHcro8ZdvLNCRiKL1q7yOJbgvof28fmvrtPAM88X39OqF7KbpNYfMWDQ="
+    ],
+    correct: 3,
+    points: 1,
+    comp: "I2"
+  },
+  {
+    id: "Q5",
+    text: "Y1ls+VnFBrY1WK5z.y1H1spliigP7mZpBib9ypFizsvU/AJsc2eKC4r0qmSS0imJzPSMFe8dU3BNeqRBQ1/t8j2rnqeSb7pccreRlg9Mu8OkAJRgRzlUr5+xVck8sXAEw7RV4mPt+SDZkOk843A7in4RKsQfbrPaPIHf/PzjFn42NFrLSwUq5/+QYU3Dge2AoF4xqO13dxVJ4poCheFp24bM1JTj7",
+    options: [
+      "YNy8gQBsYQefYTkA.EQtM1R4qkDANM1mSjDaQoCTr3l7MfXeebmFQ9XLEydCFrsITCNjyJmz3H71yHLZHb9YgvguqiXV7oXDzyKSgNgBrtjU9gKtVBD6uwwe8G3cSpO8XYA==",
+      "g3RBHUb34I+uf5YT.T/ThrkxFRkKYkKod53nkTjGgKFJo5u/5mKa4Tr2zF4ts576f1fcfU7TtigykDl0sP486z1nM2ELR+XAvgJtUUgfF86ixO2QUa+hNylMw",
+      "dqBPAg8PBFLUUKh9.l2ML+gAADvJdz3jB09bgERtUgiX88DbY61Abyhb68Gve24uEXRvauRw4I/a7EOUgYNUWxActMf4KUq2wewl4anjUEXJhcCbu3ndDojh9gr1ziQKkyWX+",
+      "zxHkym+k4tY2gNhl.Z6Bfvkx2fsUuZkHmOTL/lPcFVivVazu586vzQQUCEMBeYjffUwmZEwkjeaI8zltvwQsx+3np4OqHXoxJKnmneUlxwIhtNghXrQrbjx1McNk+cw=="
+    ],
+    correct: 2,
+    points: 1,
+    comp: "I2"
+  },
+  {
+    id: "Q6",
+    text: "kQ0IJbungBkwNFKF.5zbCQYqNzqBmvd73i5VoSG+OmH1oPMH/saD1H7qFF7TYUrmnjGUNsgObMP57elvqc/SRGXyQhm6vNhiteZeDoumM5LJMjFKdROm/niRLlwgYvzM8m0zJZKQtZhDly4iFQw==",
+    options: [
+      "NfxRU+kKPxjU/QJT.MRx1LUkfomXuN6wgzk3oCCB3bf1mJvvk8PYMaaUYpRRmVf9V",
+      "H7g5CIZhAbZisvHa.yLfDIDbkVK5BfJZj0Hp/ViOYVGhoBHcbgeX3LIsCoR//mXY=",
+      "gkVu3RVv+eRHy+JB.If9S57T2glSdwm+jjeAtM4V0utS7TbMJa80EuLZzLaEC0RERZw==",
+      "pz7UEm19E7JlR9lw.8eryW/zJrWu8ZioLMkEKopyXR7tQy+v1E0dYUfjAiQG+L9ve"
+    ],
+    correct: 2,
+    points: 1,
+    comp: "I5"
+  },
+  {
+    id: "Q7",
+    text: "YNozxKLS5TAx28Z+.VsuIv1PKjwGXBEEYdUiaP2lRfFZ7IqUz61I/5oSAhE62wC/0iEpz9G+vBV/95jgr2b+DuWGFeEOcfgDbXSes8Lbnam0epBjFLpS9ycefeswj0v1SRCcLyi3vWsjowPWc5fKkM9g3lLegWjddkc4UgU1du4yvaPmxhvKd70FNbvrE1HwRE8t6xEP3nArxOBPpcNwFN0u/252k+NFvQPTO5QQtQbuyQ0ngdg==",
+    options: [
+      "JSt9njKultv25P3H.kq0x9fwld2fbNH5UxOyv3ojsfM6tyKau264=",
+      "FsSh0xj3Eq7YHqOk.+wQx2wxsCwOfyeP/IjudFmA/EVb9uNf9PY0=",
+      "I2/vMLW84OS3NRrQ.6gLAYILGRovxBb5RpUkT6g2bfjeNR2YP9Tk=",
+      "n0GGaqsTQ6lHBtTz.YYgTi+/HtjdXr655TWtLypupP4PO5kIxxAQ="
+    ],
+    correct: 2,
+    points: 1,
+    comp: "I3"
+  },
+  {
+    id: "Q8",
+    text: "zXKkgIyHi7o2W1U6.ceXNoWVqOCvYi9iehpMcCSOu7Lg92f2OtodBKJjiUEr3uACCPjMtbHfto3FIJMO5qK2+CnyoIPRbJWyk6yJM3Vwszg4/xbAX5qY8rQs3KA6FveOeFoFesObIhXcqB7oeZYiZzHCY7XFyBPZM+LH8K9af5blI8hswTqIsaHaN2gbS8udhCQYIsl3ZEnOFvbPlRps=",
+    options: [
+      "pVdo0t3A1vVF5/zo.KJMS6TjfPxOdsMuzXB6kcLS/jVtvvsucsXs9LZA=",
+      "SsWBmWrQUOk0P97r.BFa6qnJ1ggnXhOQwV108PkAFwtmS5FXHKhOpcUQ=",
+      "6+Oi/qAg7mMWT4KH.URBZ6Rd7P4TK84ZwMRKJoKtAntHys1wd3f+x1YI/oRIDhEKfVLp9ij4WKVIHSw==",
+      "KGLO4QDtKDEHEX0h.SH+RKTqsl+TQFu1vwICBgZf2Mu8R0LU+wm1bX1E="
+    ],
+    correct: 3,
+    points: 1,
+    comp: "I4"
+  },
+  {
+    id: "Q9",
+    text: "bd4YznFPRlVrlgkD.iO4ACqQ8QZhdP2zSneXXOdNVw9GKPvf+ZaTcws++ZFnv8rsg4mkatJ3idor3NW7x/J3zJYEXf3U0EatcfwJQMQpaIpdZBSVLM7xpBuj/aFUliYJcoyDnPMLRn8RgJi/k26ZwTJgiZzdY/HlmtELM+vkZYGedqbdD/WtlL1dBGHyWTmk6zt4vtRpQgvWPCEWEp8RmXdnfo3mKoH6iXaProLqjl+lXhRW0yRCdvjoyn+2X2R9k55sDi+6JDsnqBrK8jz2hRVvZLkUmEuBEspkoEIzcJIaCjnI7JqALc573H2xFqYd0N2AiF0LHkqqJZjS/RuzjNvxu+3rmdRB/qhgAQw==",
+    options: [
+      "g+m3h/UWF+WsaFwm.eMqQcHwVo5XgNCd8umaG2FtxT9m/jkxF7RjlUTWnJxWlE+sl6U8ztnq0eCxmCDbWuaUuC9H2PDWxM5ZMsqu4i1X78UhTihD7ZUrZtyh45D1aQQh+PlV6",
+      "jYFoEAYlr9EBcyVn.go4F4OgwTDjzPK5xQp1bEosgZG2IID2Y6ludEq87+1BY3oAYyOG0Aw7FmXu4NpyHwX1PSr1fPAWTEjigMcU8ZuhCOJFxDsqDryV5VLa1iMPf",
+      "sicLC+pbFWFbed5g.mGPq1BXvRn9wxoxN8IJbBrqbMZ6wd6u17A1XmDjrN8WU2aHYG0sMrCC+/y7infVeSPXwP/m8m1l6icsYVkpANGOKWl+vCk/gICIU4B4ns6un+A==",
+      "eEhhEjyaN3bffpzx.vAARlsX9k9zY/akdOF9s6Nwxi8pZIj8j72rmHwjSfcGL9MIzz3BQnDJ7r/c61lnnoDXOMfo8XtN9pRbfJY1tWlL7Glz1BjwxQjUb9iZYDIXovcNlG8s="
+    ],
+    correct: 2,
+    points: 1,
+    comp: "I4"
+  },
+  {
+    id: "Q10",
+    text: "QoMvFkAFxS+BiriX.w4hRcxaksXfdm/wmfelJlapMRHFCtk83WlkcKgFQoLIkIkWdxL2ACy6ZvTz5K4/xy9lwtfs2YOZ4MAR2FynhMEZNhOfHuSSXI2wOzAmLe+CwNQv4M3ENL5nQGPkqF8p7pB4KSjKKbSfwq3aqhr86JqlqzO5g7zuDjabspU/gvAS7rfHlWdb7XIBtVql6d5EXEhBLww0siXglk2XOGt8yWIzAQP3zuw741QoMS5dFuS1cZAk=",
+    options: [
+      "5ztElLkR2g0zXXiB.BqQtAQcZfc0pcu5XH81tExcHHnRXW9yZWD4ZW7posqollWoM5XqfDBJlzTE=",
+      "QTzqtw+cV01ncP6m.uPE117/R0E4Iaor+gJWXoXASdSHHEbId/HDFFkkIhnTXdSgJXrOfPrw=",
+      "qt2GGQXrlXJ+kHpm.DIZMBctfRuKoAEPZ6JP1o+tBNIz31JGGfu7OSw9jhviyYUuah2bC4wU=",
+      "W6hQcWLe0MOcDUjS.3Zu7Vk/ELQgjokz0aGLI8nhl304HDtVGmhbr4wNhzquCyVka09O1Qg11Y98="
+    ],
+    correct: 1,
+    points: 1,
+    comp: "I6"
+  }
+];
+
+// ============================================================
+// CONTEXTES DES EXERCICES (chiffrés)
+// ============================================================
+const CONTEXT_EX1_ENC = "9FeaVzGF9Jd6kunp.Iptpm6jPPS8tv0wFk6FQJ1Qit+Dy2m19mfJkEMEejCW4MvFjH94RgrHMMb/s4B0qiDV/rWyg46xUeN8LomQq/CV/bHSu9S4xdlkr+U+C";
+const CONTEXT_EX2_ENC = "ezWSZNRCGOkLfM5V.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";
+let CONTEXT_EX1 = '';  // rempli après déchiffrement
+let CONTEXT_EX2 = '';  // rempli après déchiffrement
+
+// ============================================================
+// EXERCISE DATA — 10 sous-questions, 30 points (chiffré)
+// ============================================================
+const EXERCISES = [
+  {
+    id: "EX1.1",
+    partie: "HDTELtRuTxQ6StDP.6bVeOXbAYkwA80ERfvPCX3nS2qghL4zpMgKr+DeuhZW83/sjP/KrI0guxwzwAMjV4aJM0WmGAloV1C5CTn3Zulf145/n",
+    contextRef: "EX1",
+    text: "8fry+lpWq0pT9JB+.XyfkdJYp57Zzi0uqL9vqNZV0ZOBeIas+dfQU33dkwXRtxkj7uXGIoPlyGRzol0W3xypcJNarIAmgjL2tCo04hXQAyDjVGdG4l5bmgSoohMiLo1OZQVonYuBm7K1Z0sFAn11uFy+uKLQTR4FjEL/E5v8uLA==",
+    qsub: "LFw3YpewTQYXOvtu.LKWbE0pgkeoewst1xaaD/iIZrHtcNw1s+NJGIunbpor/Vy1SEzxaN42D7a1UmoF+YCg+V45FhpjEFpFlmu7fsBtaytzCvgVpEq4fv1fazclUtAeDK9L6dAtP3kkCRBzG5Tcn5m35FdQoYmibOObEwAzVH+SXGypsdP0p0YJkVVLyEj3Z+KF2lISUr/gj7DOq",
+    type: "classer",
+    bins: [
+      { name: "HRaI9AOR6i2sdG5R.C1MdWapmDNhlmkTesriR96n5pAQ8AHmdLnt17Yb40ZTAjWPlGV0UcFXQzXkP" },
+      { name: "v6Pxbw3TpWIvQK5G.UiLq9f3prFoouL8Q5oRrc2jqwneWjadOdDKWSxePL4dHBCP8/e2urnUifGg=" },
+      { name: "IZRomSkxoq8J6bWj.h4NZKnmueOtJigedrt/B0aGIOb4t4wnvbCV8bla/UgtTqPy7DA==" }
+    ],
+    items: [
+      {
+        t: "BgouzKja02lGBsTV.NzKglHnOCc0A/jMG7lKf4hLnxdlQM1hisiFLznCZ8mCitlDAscqOr7JE4q2BLcQ4vkZkuPNa7VBknv8qcYalBCa2vWiqaQ==",
+        b: "60GkX/T9lo1PwiKH.3p+36/zwgZRRHbTwW9yhh/g="
+      },
+      {
+        t: "o9Bi7yrVaY2nZlV3.rzJLlguPmyk9K0JYeVgR1ubMefWxYxdh/zXyCxMgYQKliN/jOm6KDbXhrhGnMR4RCb16",
+        b: "43b5/wE6rdy42pVO.qDkvdPi/IDHl6VNVe26fvj8="
+      },
+      {
+        t: "3XQs7MU+tU6eWgJt.ek3BC745kTNuAJR5z0VxyEqoaD9dnekyD7CW9ze1C6I/jQH+zYsYwLUGmzxDgOe4EHlI5mhyCxXnmcIKM0UoHngjPynBiXj+RA==",
+        b: "l6Eb+uBn0O/rpnvj.teK4EGtjONQiyUJ430+BsVA="
+      },
+      {
+        t: "gHet8yqPFJUjcs31.asQU01MUSze6ShdUH/LQNCPEDGFbDrykeJaAQFQQxk/q6X/xDM4glbcpJwJSEVGtOimEUYveJc2jTYn+mn+TWiPO",
+        b: "n8iw8h1NtRUS2ynb.XsstGkLB0e56IGxW1vhD7ik="
+      },
+      {
+        t: "CK6YW2aazwbXhH4S.v7KegphPngbcfHiS/ZLBnKpqVNGPCex7i0bFhL0DMOixxT/fsCWGDOlYsNSspNNB2VK0fCqKeOk=",
+        b: "ZWmsCm9co/mCTco/.FMJBhmerP35gA+Zp6p0teVg="
+      },
+      {
+        t: "N3UZTnv1OSSZ+ik6.xBZiaTH4+jgHr3uhCHuTE/LFsWryuE5k8iSBg+uA5dGaWvEZz0ZmHf0FDH+4pAKM",
+        b: "Z9C1CuNra89l/HLs.YjYhFDw5L7iGP2bFMupRKqY="
+      },
+      {
+        t: "jvtNRD0asz36geQA.1+ulSUe3AEgbN/o1QBRFxiQwhERm0xYuK8aoIvWBFG14dXQQPhwfJJWzp0qHlalSdMYWgY9VOgY=",
+        b: "sM9Eql8198DYoqdV.cAasQcL4BVax7l2WzsGfZPY="
+      },
+      {
+        t: "Fp51z/EPvIkSkuWM.1FFX2AYApIBn9TZBohVlzxG2Dg6bXDOssVfeHhyKPSa0fJFpcoBQWalkyNJXPzcMr21Go2Lw18gnJ14=",
+        b: "ORKzlUq+XFrYR1hb.ipnivgLvd/vwuRPPeY3C64A="
+      },
+      {
+        t: "8q3za9e10wf7ksou.RAvb0uMATUTafK65jT1vySR5JVS68XqVdB5LhBcwm38SJ/jIvbN0x/iZyTqsDvR7VT592h8=",
+        b: "ApLtCxQ+4gTGAPgN.EC9huyXX5HPAfXS/iUdcPuA="
+      }
+    ],
+    points: 3,
+    comp: "I3"
+  },
+  {
+    id: "EX1.2",
+    partie: "NMMLtRr/E7OEcTCd.Vb5SsRa/lNchrfafit4nlotoVdIEE451225nhe5ouniG7wtQqqjhPfrW2Lqq68LhaJxmcg33ZwXfNq8e",
+    contextRef: "EX1",
+    text: "ux7HfUUu4yRFzed5.LR63cMKrvtvl98bh2y+wnPd34XROUXWuppl2zIqd2MyDQWgKwIHiCItpe8VAVHvQzz+kPmuc+b+huYTqf4ANWOJS5O7PXZY3NIcnQtCbJkspKLn3hO+vb5Z7Xy5GdTtqsMQB/t7OujoUAA==",
+    qsub: "XFGKTrH2HXuGGb1q.FLSQ3zdo+9YMTn1y3VlHbrfOj5M7rFKokByqSaxT/oauiKI6WExdUy7O6cfGtlaedcKT+eCK483PqXbDmBxznleU2bpptIsVooN/e4ix+YzOy3rDmCUbyXyZnhgyqwyh3JzHSTSLVBU9WmHQmiobVRkqGBJ627fmrcnfh0eXAEFaX4sU",
+    type: "pairs",
+    slots: [
+      {
+        lbl: "nDePFXIwk1+HJXzi.MgGyYCn8SZyLvEBi9G7VjeWbn6BVAxk2GFH/zcJHtpBkXEa88eOWOlIS+89ZRkQTwmYiTQ0xPuZ83x3TeQdnzbxuDORol5HQxTMJIuRcgQtVmfqromLojEfjCoOruSyTI+o9ccFhuI+/",
+        ans: "kOwo8QSeisgNtOAD.zgTk1C2hdAOnU4spPW/Ch4uJ"
+      },
+      {
+        lbl: "p4qOmoWUWDk5jH5Y.tNjiCUaJxM24UFvnXDkrOTh60Wlz2hYTWTunIQAxTpQgWkt9mGOZ4nBesPgpB37lx2Bu3JnTmu4=",
+        ans: "qu0x4QGyBmCjMfUq.qs4NmP5hxHed4i11V1lp4qmL"
+      },
+      {
+        lbl: "c41VB5UqctGoDKgl.aG9hFygG1c1IDh21ldcz+jnORVBAF6njbE/TsXmDjFHCh74lkySrkJe78jtLgQdVSh0dvHH3seTPtXICQhJunZD0yzn6BGiBSEWR48dbi14t/2UOCrWh",
+        ans: "UtBXyAujWBDf+0px.Yg5waqXmTR6p4HAM0oW1h3L7"
+      },
+      {
+        lbl: "HGETvfuwwwix2EoC.Vdn0wEyjSDaQwvNQi5t3APgKr9/YA+H1tD1LJq4NCF/BObOCvAOg3sdibA/GZDOtQ11ri+BKFzI0YaQvWx4jbFEJ1WeRJXjJS5/Yk0m+ivD5lxxMWfoOYqcU",
+        ans: "26wVcVaPTP954xkJ.flgXQ1ziZD6J1KAlybMxFinf"
+      },
+      {
+        lbl: "v7ilmPAGidN8aBTh.alu+Xz52qciWdOd35dKLtljN4q5tZXZvCsRrI9CKIZ/Z/5NkM7OoZW7j+ERPrNXU2IH6tcJadoRVV9FbhReiOxT4ctTau4F1Yw==",
+        ans: "Bie6fOfd9sNs4XHw.CAoeUqsjZNwW8Voc3wnUU+Z0"
+      },
+      {
+        lbl: "ZJvDxloGLtMP+sgv.Y3prQNFt0Pm1+CBKr/ioktu2gRVPlnpUSDWyYpjIeFNOZp5ININtvs4IwS24nBTChetj4YbzaUz6sppvRQRUMgLSUfU7X1HWUvuhVBC74Zk2ftMYetRIl8MaNa7ENZlHw6oFXXeGplnYcY1zkNBblK0pMOSJQg==",
+        ans: "LCLI9c6d+bGtcZ9V.7rtnR4xIFR0zPvGvcpAjpEF6"
+      }
+    ],
+    bank: [
+      "s9EAi5XzEFFKbd51.yJOtLwLISMm5q2jvASVFaO1b",
+      "rWo3PRjKillr2IHa.Ygh2rXPYFrPrpU8/EZVps0qm",
+      "WGgPVlNBOU+gz0DU.CJ0CzOjk2KmB7oVJDTLEoX+K",
+      "/PHVANeBmf9EYxw4.Y28ODkt0zz+dZQPWU9N3jYWT",
+      "9wQFb2vocjyz7oEL.wkOPWuowmoH+6pl8EJbdG+ZL",
+      "PofwlmM/Fdqiy9MX.DDuhI2rmQV7xMZ/eDH/a51Pr",
+      "K22rQIov4xG8+3mb.E+jVUnDFupMe2euJkdR4VcII",
+      "F0FlSZjXcqbNUOtd.2BXf8tz669jY5GM0T0zMAIRl"
+    ],
+    points: 3,
+    comp: "I3"
+  },
+  {
+    id: "EX1.3",
+    partie: "ro/ojz6am5xqUsTB.pWYQ512T/RhudNRadzkIf8+rTZUyo2f+vILbmFa9kE+S3Q6+3pHV/riGjLd7KLMlqhDx6ZFxufseEk1urgnpqxRh70+3x1aIY3HVotWI3i+PU+sSIKY33Asqng==",
+    contextRef: "EX1",
+    text: "QJ1dL6OMmVhn2h+m.4rXDLj/iAXgUbSJX4VvfFFhdV+VKkUDu76h9S9T6Orf+0hRyKoFxXaqEYH31+dDiquKe6FwPcEOgTPR5rb8Brqv8mziMysLDZfOHq2OwPJB2aZDaohe/9waYKq0iPBWqWKsHa0pV0QS+EgEHFOKobqVq0pojDzItOnfdX3ry3BZYodvY6qKYdJt+llabUPKLYK/oD9NDfN/3/tn/aLuPGJW5+D5ti7SwAzKl0rnhg6nHT+YLu5nDigSg3S9YEuzrt9xamFRgFKnN",
+    qsub: "LULH/XYorXgoujNp.4s67u7HsMaV6cwJEA9sVogS2jAUPSm9XrqruBrAW8+Kqx8zCkZiUrfTsyM9TtcqYXyX+4YZr3hnXU+gMeAWPcQ9siBwboKgsmb0AcBlvCqzaE4+hjxSovq5+DT+sEXKaGQo=",
+    type: "erreurs",
+    segments: [
+      {
+        t: "R6ktU3XBHaNx1yEZ.v5ct3jwFXIo3qs04jFfOb3FrljJ8MBgu4f2eg5MYioy9PIrMJhCY6l2iWPBn7uCrcTzaqkQcr4nCTA7H7U+nug7KR2hniWuHral1COMDbSLPD+KvMsYhozuYi2DjAN6LJgwg9tE9r5jUCrUSF11qepWQEsDbFbfNfW7rj1xte0SHoNF2t4foqhKD1GkGi78Iz4cV0IIsKYs=",
+        err: "STGbOGhfOgZeJjap.bwIE/5JAF73dGIHrSOQwLyXhOQFX",
+        fix: "+O1r45IGUT2VRGS8.kyBnw3eI4gco85vw3e7I3Q=="
+      },
+      {
+        t: "QSv3J6scgLG+THdl.DrVAfJJKvznnDDHQsuc0iKMtDmAWMNT0BFV2bAJiWD/eLjixLJEWQolINjumNy4AxQJ6yqJpnZ2NEoHYyhaInDfUC1RzK6YM+Nq8Fc+4",
+        err: "cFj0jk46Dvz/cqk5.lx0SumG7FUywdSpcZxlWKf0oz9k=",
+        fix: "xoDkVmD3ZSqO9VMv.koMuI+7YLb3txzGd5gOZmaBnDtlb6BfgWbInUpLwb8jOpkPZsIPrfw3phajVfD+SJiRpsg2/iNUkxUwvX0D1+oGZExIBrYz4K2/LgMBUCz2QTPrYGEEe5WZvT5qx6387ePdI381g/qN1bIkQeczApvOFt8nO7Mroim8x3yOjDjcSZKX6Fr2qnbsWQpmvAnAfVtU="
+      },
+      {
+        t: "IkDrk6azRMLOiPFk.e7uiCcG+ACvdvCQBw1NAFOngZ5+FjZ9YZ+HvLJhxFWnk2jPEN3Q+TcfNY9LAAq9oI2ONmPUZGnTmBzCxbHKvsfpi3Iy6NlRz7VLjbN2Aa9+MEddxfcJdjw==",
+        err: "oBtt8Ec1fCnDBatU.firHV6hw3moZtJHzftqYc1jJir/z",
+        fix: "ogvRzrzSk5YtsKAW.2/FAldi3QJAcuTq4UjFZdQ=="
+      },
+      {
+        t: "zZYf4wcEy9YzTsT5.Xq5PV0xDPuncEk2P51K6r1RoT2DMvts52tVeQH69HC44MpMtFN8y+zNKMkf2df9mQDZsnLgFfJg+I/41YOc62QTPIPefU171FB7AgmqMddxDQZQeYzmyz+/7wrKD30zPj16r/CRPgD86H+WBr2tJKIMRsep43jMCFhDW5ltPpkvr+FLpYTwF6lYCIRZ0XCvO7k2h5ufmo2A=",
+        err: "ELgHYEGCJbi/uCfh./2rLWi19HN/vXqbmJ/UWiDFNnp+O",
+        fix: "iNheUTUWspEJ2qy9.L3/VUJSS6iVqfM/yL08Lrw=="
+      },
+      {
+        t: "l3Xjz0g61cCAj+vT.IAbb7/E3AKMg57VMVoLvNKhVHAFLRqoPoeWl39EjwESwnwkOSfHrTKFGEExTFcWt2h0UzvKY9IUzzqU5K2iwwqqzHcmjwJx07YhYqRvO",
+        err: "WtdKBrnEbXjO1Mkj.XiPgIlGsVianFKQvqPlNFWTfI1xN",
+        fix: "JBFRv7vtdVlbF7jd.Itz7TaPu6x0ObjahYpm+MA=="
+      },
+      {
+        t: "FMm6EE3mhL/fyuTx.HAd39PeZdyZO6BIIyXVbh24UVY4OcDMl9rxvK+YULLTHMKm329dMuvTfb1SOk9pTX7CHTIGQxsexHHWOzhBpA8ZXTIGMdhnQTF58J6aj+2/jIk1oW06KR9+U23WkPcRmkEvLkg==",
+        err: "X4RpS5G3uelrxULo.DWlPzMN2kOSZoXuwlVsvD5+av04=",
+        fix: "uth4V4euq5WHJz9K.1h2s7lv6cMzIKjYNAKaatohfViQjbz+KCDh3fBWns1GEPaH5pfslQrG4ejpYjmlw85TAVb5/ALT4eVsN961dNOPCF2t2KxBFJnd18pZ0gTVKHLhY+jXLTznPCj2ilWBPFrvOyA8STt2nI9AK+nNMipzAQO8Yqc91uzZzLTNwRDVWIq8FY692jg=="
+      },
+      {
+        t: "Iv8p3E6GfwmIvyQg.zjvX2h3arHMBiNbONdrYEIxkUY9b+3WcbQlkoskSYXO1kIkSM5AGGMo4ugQyLCakVnnBJsFW/3Q6pLRTFVL0KNxecIYDJF355OkxnVplkizF8T7ZEYxt7yQlHm3WclcI+9bvCzOJs5U6xo/h50mUvHzYkF2wibzCCJV246t9zMm0seN3oT3jcUkvU2t51jbCWnZaVSsZTMTNBRP5ReilIlpcuT+zwZDR+cLnm60H2FYn89TMyS3yuRQ8rcZOjNJ9mAqABk433prW7g==",
+        err: "xjEvGQhmqYrmcTq1.9e2nFD7qcvYN9CAGNjaFe+9QePzL",
+        fix: "PREemnTfE+37LTL/.eVrt9bagFLItUjOvgCoD+Q=="
+      },
+      {
+        t: "0FReRzUfYUx4TaTe.kcfFnCVl/uMnkk7l5Puu68IGEsVwJCASYroSiqbdk3V0FGYyAkgnQjDUIUSSp+Vbq22Lqu3dNGaoFX/0O5fZEZWwPrE055jX3syAUTaGBZtaO7bzq2mvNbCUJxcySfT5VHcwuS7aoWgDrY6qFNHxSqoD2A==",
+        err: "8nLbQrp1HFKR0mWQ.DNuuCgnZm/jeRL+Y/ym75QQ15QE=",
+        fix: "YCV1cZvJqP67WlKN.GPL2VuJ5Hy+/gULJskVGAhdxqritXe5MGYEhU4YnknsnsiSSSS7VPUiwQao04kSXVIZrWJcnI/HfQdczVb1KxdhYio9REBhXq5ceq4AYUgk6sSxl3qRtnVQAja9ntXmYBQtE"
+      },
+      {
+        t: "k9m+zpSe3+R1VgIk.vcXXp5Ik5YCRPWTyCh3Gi4FoYYb9hZ2fxF9blgDsPoF9DdhC8oWYkxxtEvvuaDBLKP5lCJOfw/JN+MEs0I5nuQsW0DPI+XxR53ELW1iGBS6yfL1fY2iimebCldJ1MXCzZ6E+83HAK5t9116we87gj6E=",
+        err: "3daIUD9viSwlxtoH.iYGUevqgeRnbRwzso7aFcod1YIa4",
+        fix: "9NKGl8fOFouR4xek.REMNN3kboTrAzMkS8/qtKA=="
+      },
+      {
+        t: "m9770OMergoZP/qB.CCqgHWjaVufbHXWS3/SkrirGmVvkx1B8WNjbsuNjfTGsW3isFKqiQeHIyjSySuKfIDVOeo1Ou7yuETsrNyhZoZNYZfbGAWktQmOqsEkPBxpkrvLjtXFQEctWIyMqGNa8sGGKQf1WvEio1JA=",
+        err: "6+uyOzoZqg7iBLmX.WLS8Y0BWs0y6LJNQ3vdXfstAqF8=",
+        fix: "Jx1Y+RcODY6KJG8p.wKe2BTW2MOr53ofgzGVTrpH6ibszxNZQohoj3QlrY9ydGBuJI7vABPMdtYy1RGHemvVpeKeYyDKixqgW2bPKx50rwBvM5MJmlkxkFwua1z4/ZRDQnw6KDQlAZRmVz2fqs5HDojOFLLLNEQQaCCo="
+      }
+    ],
+    points: 4,
+    comp: "I4"
+  },
+  {
+    id: "EX1.4",
+    partie: "iqu9jTBqvtQXnmVX.GjugFw7WIYEzCTAuR7uXB7zGFI8MdxMTjoMcKhLFTgJvc2u3goCNdhsVH9/Er2f/ky5xDapq7w==",
+    contextRef: "EX1",
+    text: "Euk30Fp3WISWi1UJ.+ySFpKZFX1fgmt9LZtb8rlgcpIcmMVwWSfwmpDgY2k35AKQBW5qRVdlJIMcaucaYTCLUuW0WHEpQF9ZsuLrLFLatkELMIthYuTmltKsE//Soc78w9DbiG+vA20GkXnT5xLvVAyHHXhPTc5LsUvJZgxkS7YWwx5LuKRRX1/K6c1jB2Gm0DmChDlBjP7VyoYwVNA==",
+    qsub: "9QFPSraZz4StXR4y.vUia9SFqmT5FhQd+SiNAI4j+XQOaUXFP0dle9ZlqsIuaLV9BnCpk06OEh1cI+/fIIhAFuw2zFWMiL8fLPzsJsILJ0uKp7SFTewU8tZmKb3s6ASUa6y4j5Q==",
+    type: "multi",
+    options: [
+      "LdOh24QHtguitxIQ.oc9wPQpQDqqWl/a2IFdFkdML5RMPXOUYryftfvPo2dLm5M+YJSEdPilFMx5Wz2oNy1lZjOyx8lmuVRhE0vHx/sBspwaR8qGVLlfM+qfhFrLIZxZro/NeGg7zu1nIQct28kSgsZP5z8ng/6krcoY2mo7i6UtG7xOUFIJIH4ThzxSBhHq36acP1GzPXD+NUSmNf5E=",
+      "uGA/jqA+zfXuu2TZ.edCanqjNDqaFpRICWE8tNy5Woqz6nD2MZFD9bwqpVP+btX0uBk3+IUzLInopvDOEGKJTjeI6WEUMpLXB5PDuNoAywlas1ium83FuCGIQ5DR8hcM3Hh+psVLCxfY95mK5/eUZRDcyQk/MhDal1/CPNEZOw7RkoYkd8y3w",
+      "HbS08dyDL9YTZSx0.Axoz6oly2Y4W6zpDgsd4vnv7JHIntWRAPCJdcmKIuKH10Wp9Ncs/eVbBj3Bmg58HJB3R/dVqbcw6K6n0R6sj0D8OMZLTEXbgKaTDXu8kRwYWtm9G",
+      "mexE6crmC8tjlV8h.nJTf7JaP8CYNfbdgFFC1yWaw6oV1KmeTn4SIitWfQtPiGGgiGwN7RP/g7FofxCDLRou9OyHG8bsF6vrUbAU4FSnq34AzUizB1rTofnE23CD0r+KZtg==",
+      "eP0DU8cfb8kqXlAF.gmwkRsX6zj8ZLsSpf4oX+IaG+i4O4XSsGgllFrLN95ukSigWqIqhAzp/YYyjahFfbXenLwX8sZJtamTup1KQHcUUqFabVrrRflZgEG15a2sumaq2y3Au18eOI3yhuSZ+Ag==",
+      "typWrrC1dGeW+Sos.rlHhdEghLjRTwyeMB/PEYuU4Mk/R+yf5qoE0BZ5dbWCH2IhhgBreFC2l8gehsG3X20oH3lP//Mf1C9ASI45/9nHZczqPIA3D9/CJ1iQfJIlxWnZGjvMc/N6t1376TwIBKLR1lz5uGB8+AmEGWPwecERQbBhsGIhOmc6xkbLmqRmyLVY="
+    ],
+    multi: "zr1VGN1xRvrWpwzZ.HVM3+uUp8mOQ9ae1XTT2nhreB+1tHBryzA==",
+    points: 2,
+    comp: "I1"
+  },
+  {
+    id: "EX1.5",
+    partie: "4TjrsmTpk6DkOQAL.42YV4tpZEztAHYLoA/zrEvmgiOdXmBWBKftSabH+UtNb3zU8Xyi/E8RgItnSISGHJfOOhAPyB9ScWabZJH5/yMhCgPfVQYEWBD4=",
+    contextRef: "EX1",
+    data: "9WVxH8e/BTx90wD6.swkc9CdWmPlz+XuM8fOCW/h2in/5VeEm/LpQV5eSDwy5DXoLLFWUB5a+oOvHNllhmzicioARewUlhmqhR/URE4quupXe+IyOjBIcd4y1UbWlCuW7EIRAXFGnFhAtHbb6j7NaRWL5YsKDymR6yXAVPC6Cb3DleWMMYJMs/JFBrnanuW3SEQEc6lo46g/HNdjfBMRZPs6R6rAY9juYgCsQ6L3kV6/rzMnvUgK6pw2vm+FtfOGbAYynJaxLHw92h+pc5UnJxxOQ+4oYazUUiL6y6e/Qgzdz3HxfWOPni/ERTm9HIEnGDtH/reoL5wm5oK767pO9e3Qicrc/ck3XJlkJRZ7pGQ==",
+    text: "u6VhXAm0+duY23Om.Ft0OgzhXgsvR4ZWy3XkOYkOR6dO+7U4/FVzCgCaubg1Pw1eiyYvSGPBpAp8NRF1HmjJOnxvhVXHMhxg8byWTpoG5sr9kg3rEaQg+oII0eX9KBgA8x72f5NkLvBYaR3OsQnfejHAxfpx4UGcmnuFrNq4VylHYDDCa4XhK/JbyfGdAthzwTP3WJb3DQ4dRrgHUERyekdiwRxOm0yD/IMHHBdGYEb2HSAaUnURadjNjbpyl4+4qKLA811sFnDMXvc8DV/alofj+yJEr",
+    type: "numeric",
+    answer: "Eo6cFha35A0WHraZ.VRxiRplmKtVWMMSF+5ctIpeVcL8=",
+    tolerance: 0.01,
+    unit: "€",
+    points: 2,
+    comp: "I6"
+  },
+  {
+    id: "EX1.6",
+    partie: "L7XJZZII9lwE/V05.j8fHExm5L1dTs6PFBd1vi/MhXhjJF49IF+1LMri2zkU9XbN82YiS7j/Pw8ifXPWTmaOg8GHLagH4nc4=",
+    contextRef: "EX1",
+    text: "QIgfvPaVRfqrIB5z.3Ib9ZXYpQIz/TQtbd//IcmOmhzKZu2TqYBwGwitt9TVMNil6cK/dPtrsFw3XCcLdGFQCgKxudI9QPVt5/8/J8W08v5+q9m8vgZ8VLV7hGwGAQ8S3CNFNaoyTT+bD0ehjOK7nZO0z66T9n9F/Bw2P3z0VTdzowDyXpmc0v//FN67oODK6EjQQkMClQ2W0aDc=",
+    type: "numeric",
+    answer: "tm62ObojIlljIptR.xY1xtblPxxJ1QQOyjwzwd4CRwQ==",
+    tolerance: 0.01,
+    unit: "€",
+    points: 1,
+    comp: "I2"
+  },
+  {
+    id: "EX2.1",
+    partie: "+lKicKksKbzEGcRt.tw20swxOOssYCFBDXV/j2CyT8Q32sg83HEouP/unk5bmzgXwWQhWaZOoWNhKWTF4VCX58hS1RgnXVA==",
+    contextRef: "EX2",
+    layout: "dossier",
+    text: "I+0bZ/SAPvPl0yNg.NYoFHGes0yZDB7iQJeibUe3RFBHjmPKmgCMC/XwAX3XxDBSOQvVsymQQbtYxXXE4bCUan7EiWEOVwdmN35cLtPBwX4GL0zXPbdNSR9qav/wE0VM6osZ4Ya+QnuTwS9Vy4+99sfgqOaFHs4Y=",
+    qsub: "VM+GfYCV3sKXrD7W.AbQPmiiRQZWSIPD34Hg7nK7az+u8li356BHx4RTXVwK7Nf7VwVb0P2v7R7kx2+r7o4ahpSo9FgS0NSs9L5lf+EhlOPJ5FYD30g3VLVd+NT6CVtlmObRCIki0mQqdC5fJX98vwW49Xq/CSpQylTMCWUDUlDM/GHPADXNh0vYOQUXKB6DjnPw=",
+    type: "intervat",
+    edit: ["II", "III"],
+    answers: "zByMc1wqaBSFFKTI.XCsKUBpVhjH84VNpDRWKrPfBP/kfH606Cj+OQ4MlMELCT3vLg5FCbbHZzHgWKhp8joj0jOeYrRbnWYsHAdAvagpdIN/7aben5hst5IOOfxmqOQjaqSlWm4DUVrSS4JwgUUhFtMyaVQhvCCKo1sPjr5Yz2A3Gv/FCgq7oVXJgtfa/EhX0Ig==",
+    tolerance: 0.01,
+    ivSociete: "QZcezDDXZ/0ayrT8.7Ve45KfvvMr8+Z6GOvgMJFgFioWqlGCyrkh94WEn3uVd1Btkb3Tp0d6D6Q==",
+    ivPeriode: "msNiQ1cFWYA6XXp2.I4NI3D2TbwcfMeaWdmUblFVx5Hqh2421N44l3x5Lvx97d6s9mfuZh5YV",
+    points: 5,
+    comp: "I5"
+  },
+  {
+    id: "EX2.2",
+    partie: "G+12rhV1qA30+vpY.k+UMSsSpqSDpGZWz4orSEtQdRYxotSCZWjNl5eJroRCKEMWwlIqY7xNETMZ+fARz005dPtoJtLQ=",
+    contextRef: "EX2",
+    layout: "dossier",
+    text: "gSTEiLlnq7Qer9Fl.8JjfsyUdsM+edNVLC1UviRKDvfCI+BOQNR57KxVR3PkZdmG+2l7r9wuiB/nEu4HC6f6b9UdpV5jcqUSFUThKGHy7gXW4ik2RVQwvhiSpeTzCA4nWldVph+dcJl9hdaAJjMpiYuAviCPgoA==",
+    qsub: "TJCtBhX0XZ1/vjKE.xhGxWoL7N26zftMlnKZWlhKCg9PiENvMNw+IsxvgzsvZhpkDS2SxOl5EnIDaNTGJjrFEZ5FzCnTxjm+ADJRke3qmYeJh9Byin0U5mwP9hfeLJe8NUSLlmy6K38SYLCP9vjvCCzSrdqjkomldE1bAGy1nqVw5jLxvdgEBZAE6c0IGBjqL808=",
+    type: "intervat",
+    edit: ["IV", "V"],
+    answers: "1eBnPTAg1MwTEGw5.LGozzHT7qjF+SuXB/6X4phjNfzRLavj4vOXzv3LnlxCFXbl8glHoA3yaXg1o6vHgUYz77PdnqGxykv6ESloUOXmE4lCwyWArcqcrE1iU0ZduOUnONokt6lppSbAjZMyE",
+    tolerance: 0.01,
+    ivSociete: "H5VsA9gOiAwv3Vt+.+gfJ8067C8vboR2s7XSO68mAsumjsNoZK88YfjrSqwCtHJagCoS13F3bYw==",
+    ivPeriode: "71Dq7UFN95Ls8HWO.Tq1WYrAc9+ygzo3AuuTxa7jLT2J7iGh6qvDLZknB0ec9y0nIoob4rHpD",
+    points: 5,
+    comp: "I5"
+  },
+  {
+    id: "EX2.3",
+    partie: "PoFTr07R9yWHNUm1.o01NW/yoegwDO9gtwBNOla0RD7ij6B5UN0zTRFcEryvgCQqLKzqvkN4yQg+msQ0/UmDAnEuBPVygLA==",
+    contextRef: "EX2",
+    layout: "dossier",
+    text: "QSctzxfk8+4nQS2R.IIzVPWTrukzdYhLzhCFBginzaYEA8J2rKCY+mKzPk07S2sqitJlrfrR/amAIk/SwwRDbwxLaj2u4Z9IZ8eK1fA==",
+    qsub: "Dmvqazz8cwUGsnNL.K6UZyB7WuGTu3JY7bOrTj3eUt5AMuzyU3K6IR3XqXgUeUDDoSFvgZVjpwpErDH90NF+/FiKQ+Zi7BXYYhp5NsYmZbT0/q1gQpwA=",
+    type: "intervat",
+    edit: ["VI"],
+    solde: true,
+    answers: "Y0G4Bmn/PGbU8PAh.R8qe20l8atSENyahtqw3FJ8SyMF+JNziGG1O",
+    tolerance: 0.01,
+    ivSociete: "a/yVWgzVbKn7wis7.5Jo6yr5gjgiY6988b89TYGcmlVemou6Ydyr+pefM6n+mFaQh36jZRBjRKQ==",
+    ivPeriode: "V+b5ecnDMThxW0Ck.YQNt3NHL+TwG5LxIrBPzTukJfcEliHn3ZOdxpvBuP17qDVTFr5fz3ayg",
+    points: 3,
+    comp: "I6"
+  },
+  {
+    id: "EX2.4",
+    partie: "OlLdmCgDbXR+wYDA.iJCP9qpS1I4KDV/zqmgKDzhtncfacxpptpThD6S2GNZPSS6U7DdhfcaHPcQqzROhjcOgiW0fYZdQOIde",
+    contextRef: "EX2",
+    layout: "dossier",
+    text: "yw1fPZNZbShRitqH.iW5W9YMFg1yBmL52VoN4BtrQcKaTtuvH3qfnyaCDbYMAYRwk5mK6pW3nV4TG4vm/IdyTydhXkzBRBPeG04Q9BMLQuTjOLmFITBhfU/k7pik8Tmk94EI/fAOYM453KJMfOc7duPkTEHPUbXs9a4hJO60C6JfMEw==",
+    type: "qcm",
+    options: [
+      "KeNiC9KmC2NIzjRS.6CGwBGKSkt34cuuTvJZMIlxhLkPBF/RePaz8tHcraHyUdqA=",
+      "41H+6cQ7A4n0lfhf.Gn56uhRoj22eTocR3XvteJjvpLbflVIlT/kWH+fUWGa/JZY=",
+      "609b/TdfKk7+qVJp.Obub4Q3HkBivjIveQErFp2hj58x8C0qfo2iMU3Me10yW7hZfKA==",
+      "etYBwqMQrMLDo/Zm.ms0n7rFowRBk1IT5h+5yVFDqBAEaJK0gNbIvTuv1HfM5zK+2"
+    ],
+    correct: 0,
+    points: 2,
+    comp: "I2"
+  }
+];
+
+
+// ============================================================
+// RANDOMISATION — tous les types, une seule fois après déchiffrement
+// (ordre stable pendant la session, différent entre élèves)
+// ============================================================
+function fisherYates(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function shuffleOptions(arr, correctIndex) {
+  const correctText = arr[correctIndex];
+  const shuffled = fisherYates(arr.slice());
+  return { options: shuffled, correct: shuffled.indexOf(correctText) };
+}
+
+function applyShuffles() {
+  QUIZ.forEach(q => {
+    const s = shuffleOptions(q.options, q.correct);
+    q.options = s.options;
+    q.correct = s.correct;
+  });
+
+  EXERCISES.forEach(ex => {
+    if (ex.type === 'qcm') {
+      const s = shuffleOptions(ex.options, ex.correct);
+      ex.options = s.options; ex.correct = s.correct;
+    }
+    if (ex.type === 'multi') {                      // remappage des index corrects
+      const correctTexts = ex.multi.map(i => ex.options[i]);
+      ex.options = fisherYates(ex.options.slice());
+      ex.multi = correctTexts.map(t => ex.options.indexOf(t)).sort((a, b) => a - b);
+    }
+    if (ex.type === 'classer') { ex.items = fisherYates(ex.items.slice()); }
+    if (ex.type === 'pairs')   { ex.bank  = fisherYates(ex.bank.slice());
+                                 ex.slots = fisherYates(ex.slots.slice()); }
+    if (ex.type === 'schema')  { ex.bank  = fisherYates(ex.bank.slice()); }
+    // 'erreurs' : jamais mélangé (texte suivi, numéros P1, P2… comparables entre élèves)
+    // 'intervat' : formulaire fixe
+  });
+}
+
+// ============================================================
+// UTILITAIRES
+// ============================================================
+function esc(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function stripTags(html) {
+  const d = document.createElement('div');
+  d.innerHTML = String(html || '');
+  return (d.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+// Montant saisi -> nombre. Point ou virgule = séparateur décimal ; espaces ignorés.
+function parseAmount(raw) {
+  if (raw === null || raw === undefined) return NaN;
+  let s = String(raw).trim().replace(/[\s  €]/g, '').replace(/[−–]/g, '-');
+  if (s === '') return NaN;
+  const hasComma = s.includes(','), hasDot = s.includes('.');
+  if (hasComma && hasDot) {
+    s = s.lastIndexOf(',') > s.lastIndexOf('.') ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+  } else if (hasComma) {
+    s = s.replace(',', '.');
+  }
+  if (!/^-?\d+(\.\d+)?$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+
+const pointsPartiels = (ok, total, max) => Math.round((ok / total) * max * 2) / 2;
+
+function fmtPts(n) {
+  return Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ',');
+}
+
+function fmtTime(sec) {
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
+}
+
+function secondsSince(t0) {
+  return Math.max(0, Math.round((Date.now() - t0) / 1000));
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('appHeader').hidden = (id === 'screenLogin' || id === 'screenLocked');
+  window.scrollTo(0, 0);
+}
+
+function showDone() {
+  document.getElementById('hdrEmail').textContent = STATE.email;
+  showScreen('screenDone');
+}
+
+function updateProgress() {
+  const done = STATE.quizAnswered.filter(Boolean).length + STATE.exAnswered.filter(Boolean).length;
+  const total = CONFIG.NB_QUIZ + CONFIG.NB_EXERCICES;
+  document.getElementById('progressFill').style.width = (100 * done / total) + '%';
+}
+
+// ============================================================
+// COMMUNICATION GOOGLE SHEET — JSONP (GET) et POST no-cors
+// ============================================================
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    const script = document.createElement('script');
+    let fini = false;
+    const nettoyer = () => {
+      window[cbName] = function () {};          // une réponse tardive ne provoque pas d'erreur
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+    const minuterie = setTimeout(() => {
+      if (fini) return;
+      fini = true; nettoyer(); reject(new Error('Délai dépassé'));
+    }, 20000);
+    window[cbName] = function (data) {
+      if (fini) return;
+      fini = true; clearTimeout(minuterie); nettoyer(); resolve(data || {});
+    };
+    const qs = Object.entries(params)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+    script.src = `${CONFIG.SCRIPT_URL}?callback=${cbName}&${qs}`;
+    script.onerror = () => {
+      if (fini) return;
+      fini = true; clearTimeout(minuterie); nettoyer(); reject(new Error('Erreur réseau'));
+    };
+    document.body.appendChild(script);
+  });
+}
+
+// File d'envoi : un POST à la fois, dans l'ordre, avec nouvel essai en cas de coupure réseau
+const POST_QUEUE = [];
+let POST_BUSY = false;
+
+function postData(payload) {
+  POST_QUEUE.push({ payload: payload, essais: 0 });
+  pumpQueue();
+}
+
+async function pumpQueue() {
+  if (POST_BUSY) return;
+  POST_BUSY = true;
+  while (POST_QUEUE.length) {
+    const item = POST_QUEUE[0];
+    try {
+      await fetch(CONFIG.SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',                              // OBLIGATOIRE
+        headers: { 'Content-Type': 'text/plain' },    // PAS 'application/json'
+        body: JSON.stringify(item.payload)
+      });
+      POST_QUEUE.shift();
+    } catch (err) {
+      item.essais++;
+      await new Promise(r => setTimeout(r, Math.min(30000, 2000 * item.essais)));
+    }
+    updateSendStatus();
+  }
+  POST_BUSY = false;
+  updateSendStatus();
+}
+
+function updateSendStatus() {
+  const el = document.getElementById('sendStatus');
+  if (!el || STATE.running) return;
+  if (POST_QUEUE.length) {
+    el.className = 'send-status pending';
+    el.textContent = 'Envoi de tes réponses à ton professeur… Ne ferme pas encore cette page.';
+  } else {
+    el.className = 'send-status done';
+    el.textContent = '✓ Tes réponses ont été envoyées à ton professeur. Tu peux fermer cette page.';
+  }
+}
+
+window.addEventListener('beforeunload', e => {
+  if (STATE.running || POST_QUEUE.length) { e.preventDefault(); e.returnValue = ''; }
+});
+
+function ligneResultat(champs) {
+  return Object.assign({
+    action: 'submit_answer',
+    email: STATE.email,
+    classe: STATE.classe,
+    application: CONFIG.APP_NAME,
+    session: STATE.session
+  }, champs);
+}
+
+// ============================================================
+// MESURE DES COMPÉTENCES (cahier des charges, section 16)
+// ============================================================
+const ptsOf = q => q.points || 1;
+
+function auditCompetences() {
+  const compte = {};
+  Object.keys(COMPETENCES).forEach(c => compte[c] = { nb: 0, types: new Set() });
+  [...QUIZ.map(q => ({ ...q, type: 'qcm' })), ...EXERCISES].forEach(q => {
+    if (!q.comp || !COMPETENCES[q.comp]) { console.warn('Question sans compétence :', q.id); return; }
+    compte[q.comp].nb++; compte[q.comp].types.add(q.type);
+  });
+  Object.entries(compte).forEach(([c, v]) => {
+    if (v.nb === 0) console.warn(`${c} déclarée mais jamais mesurée — la retirer du référentiel`);
+    if (v.nb > 0 && v.nb < 3) console.warn(`${c} : ${v.nb} question(s) — affichée en « indice », pas en niveau`);
+    if (v.types.size === 1) console.warn(`${c} : un seul type de question (${[...v.types]}) — voir règle 16.4-4`);
+  });
+}
+
+function initComp() {
+  STATE.comp = {};
+  Object.keys(COMPETENCES).forEach(c =>
+    STATE.comp[c] = { pts: 0, max: 0, nb: 0, reussi1: 0, abandons: 0, temps: 0 });
+  [...QUIZ.map(q => ({ ...q, points: 1 })), ...EXERCISES].forEach(q => {
+    const c = STATE.comp[q.comp]; if (!c) return;
+    c.max += ptsOf(q); c.nb++;
+  });
+}
+
+function creditComp(q, points, tentative, temps, abandon) {
+  const c = STATE.comp[q.comp]; if (!c) return;
+  c.pts += points; c.temps += temps;
+  if (abandon) c.abandons++;
+  else if (points === ptsOf(q) && tentative === 1) c.reussi1++;
+}
+
+function niveauComp(c) {
+  if (c.nb < 3) return 'Indice';
+  const taux = c.max ? c.pts / c.max : 0;
+  if (taux < 0.5) return 'Non acquis';
+  if (taux < 0.8) return 'En cours';
+  return (c.abandons > 0 || c.reussi1 / c.nb < 0.5) ? 'En cours' : 'Acquis';
+}
+
+// ============================================================
+// DÉCHIFFREMENT AES-GCM (Web Crypto API)
+// ============================================================
+let DATA_READY = false;
+
+async function importKey(hexKey) {
+  const keyBytes = new Uint8Array(
+    hexKey.match(/.{1,2}/g).map(b => parseInt(b, 16))
+  );
+  return await window.crypto.subtle.importKey(
+    'raw', keyBytes, 'AES-GCM', false, ['decrypt']
+  );
+}
+
+async function decryptText(encrypted, cryptoKey) {
+  if (encrypted === null || encrypted === undefined) return encrypted;
+  const [ivB64, cipherB64] = encrypted.split('.');
+  const iv = Uint8Array.from(atob(ivB64), c => c.charCodeAt(0));
+  const cipher = Uint8Array.from(atob(cipherB64), c => c.charCodeAt(0));
+  const decrypted = await window.crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: iv },
+    cryptoKey,
+    cipher
+  );
+  return new TextDecoder().decode(decrypted);
+}
+
+async function decryptAllData(cryptoKey) {
+  const d = v => decryptText(v, cryptoKey);
+
+  // === Quiz ===
+  for (let q of QUIZ) {
+    q.text = await d(q.text);
+    q.options = await Promise.all(q.options.map(o => d(o)));
+  }
+
+  // === Contexte(s) ===
+  if (typeof CONTEXT_EX1_ENC !== 'undefined') CONTEXT_EX1 = await d(CONTEXT_EX1_ENC);
+  if (typeof CONTEXT_EX2_ENC !== 'undefined') CONTEXT_EX2 = await d(CONTEXT_EX2_ENC);
+
+  // === Exercices ===
+  for (let ex of EXERCISES) {
+    ex.text = await d(ex.text);
+    if (ex.partie) ex.partie = await d(ex.partie);
+    if (ex.qsub) ex.qsub = await d(ex.qsub);
+    if (ex.data) ex.data = await d(ex.data);
+    if (ex.ivSociete) ex.ivSociete = await d(ex.ivSociete);
+    if (ex.ivPeriode) ex.ivPeriode = await d(ex.ivPeriode);
+    if (ex.contextRef === 'EX1') ex.context = CONTEXT_EX1;
+    else if (ex.contextRef === 'EX2') ex.context = CONTEXT_EX2;
+
+    if (ex.options) ex.options = await Promise.all(ex.options.map(o => d(o)));
+    if (ex.answer !== undefined && ex.answer !== null) ex.answer = parseFloat(await d(ex.answer));
+    if (typeof ex.multi === 'string') ex.multi = JSON.parse(await d(ex.multi));
+    if (ex.bins) for (const b of ex.bins) b.name = await d(b.name);
+    if (ex.items) for (const it of ex.items) { it.t = await d(it.t); it.b = parseInt(await d(it.b), 10); }
+    if (ex.slots) for (const s of ex.slots) { s.lbl = await d(s.lbl); s.ans = await d(s.ans); }
+    if (ex.bank) ex.bank = await Promise.all(ex.bank.map(b => d(b)));
+    if (ex.segments) for (const s of ex.segments) {
+      s.t = await d(s.t);
+      s.err = (await d(s.err)) === 'true';
+      s.fix = await d(s.fix);
+    }
+    if (ex.type === 'intervat' && typeof ex.answers === 'string') ex.answers = JSON.parse(await d(ex.answers));
+  }
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  STATE.startTime = Date.now();
+  STATE.timerInterval = setInterval(() => {
+    STATE.elapsed = secondsSince(STATE.startTime);
+    document.getElementById('timer').textContent = fmtTime(STATE.elapsed);
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(STATE.timerInterval);
+  STATE.elapsed = secondsSince(STATE.startTime);
+  document.getElementById('timer').textContent = fmtTime(STATE.elapsed);
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+async function handleLogin() {
+  const input = document.getElementById('emailInput');
+  const errorEl = document.getElementById('loginError');
+  const btn = document.getElementById('btnLogin');
+  const email = input.value.trim();
+  errorEl.textContent = '';
+  if (btn.disabled) return;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Entre ton adresse e-mail scolaire complète.';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Connexion…';
+
+  try {
+    // Step 1: check_email — récupère aussi la clé de déchiffrement
+    const emailResult = await jsonp({ action: 'check_email', email: email });
+
+    // Verrou fermé
+    if (emailResult.error === 'locked') {
+      showScreen('screenLocked');
+      return;
+    }
+
+    if (!emailResult.found) {
+      errorEl.textContent = "Cette adresse email n'est pas enregistrée. Contacte ton professeur.";
+      btn.disabled = false;
+      btn.textContent = "Commencer l'évaluation";
+      return;
+    }
+
+    if (!emailResult.cle) {
+      errorEl.textContent = "Erreur technique : clé absente. Préviens ton professeur.";
+      btn.disabled = false;
+      btn.textContent = "Commencer l'évaluation";
+      return;
+    }
+
+    // Step 1b : importer la clé et déchiffrer toutes les données (une seule fois)
+    try {
+      if (!DATA_READY) {
+        const cryptoKey = await importKey(emailResult.cle);
+        await decryptAllData(cryptoKey);
+        applyShuffles();
+        DATA_READY = true;
+      }
+    } catch (cryptoErr) {
+      console.error(cryptoErr);
+      errorEl.textContent = "Erreur technique au chargement. Préviens ton professeur.";
+      btn.disabled = false;
+      btn.textContent = "Commencer l'évaluation";
+      return;
+    }
+
+    STATE.email = email;
+    STATE.classe = emailResult.classe || '';
+
+    // Step 2: check_access (avec gestion du verrou)
+    const accessResult = await jsonp({ action: 'check_access', email: email, app: CONFIG.APP_NAME });
+    if (accessResult.error === 'locked') { showScreen('screenLocked'); return; }
+    if (accessResult.status === 'completed') { showScreen('screenDone'); return; }
+
+    // Step 3: start_eval (avec gestion du verrou)
+    const startResult = await jsonp({ action: 'start_eval', email: email, app: CONFIG.APP_NAME });
+    if (startResult && startResult.error === 'locked') { showScreen('screenLocked'); return; }
+  } catch (err) {
+    console.error(err);
+    errorEl.textContent = 'Erreur de connexion. Vérifie ta connexion internet et réessaie.';
+    btn.disabled = false;
+    btn.textContent = "Commencer l'évaluation";
+    return;
+  }
+
+  startEvaluation();
+}
+
+function startEvaluation() {
+  STATE.session = new Date().toISOString();
+  document.getElementById('hdrEmail').textContent = STATE.email;
+  postData({
+    action: 'register_app',
+    application: CONFIG.APP_NAME,
+    nb_quiz: CONFIG.NB_QUIZ,
+    nb_exercices: CONFIG.NB_EXERCICES,
+    points_max: CONFIG.POINTS_MAX
+  });
+  initComp();
+  STATE.running = true;
+  startTimer();
+  STATE.quizStartTime = Date.now();
+  showScreen('screenQuiz');
+  renderQuiz();
+}
+
+// ============================================================
+// QUIZ — 10 QCM, une seule tentative, retour correct / incorrect
+// ============================================================
+const LETTRES = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+function renderQuiz() {
+  const q = QUIZ[STATE.currentQuiz];
+  STATE.quizPick = null;
+  STATE.questionStartTime = Date.now();
+  const card = document.getElementById('quizCard');
+  card.innerHTML = `
+    <div class="q-meta"><span class="q-badge">Théorie</span>
+      Question ${STATE.currentQuiz + 1} / ${QUIZ.length}
+      <span class="q-pts">· 1 point · 1 tentative</span></div>
+    <div class="q-text">${esc(q.text)}</div>
+    <div class="qcm-list">${q.options.map((o, i) => `
+      <button type="button" class="qcm-option" data-opt="${i}">
+        <span class="qcm-letter">${LETTRES[i]}</span><span class="qcm-text">${esc(o)}</span>
+      </button>`).join('')}</div>
+    <div class="feedback" id="quizFeedback" hidden></div>
+    <div class="q-actions">
+      <button type="button" class="btn-primary" id="btnQuizValidate" disabled>Valider ma réponse</button>
+      <button type="button" class="btn-primary" id="btnQuizNext" hidden>Question suivante →</button>
+    </div>`;
+  card.querySelectorAll('.qcm-option').forEach(el => {
+    el.onclick = () => {
+      if (el.classList.contains('locked')) return;
+      card.querySelectorAll('.qcm-option').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      STATE.quizPick = parseInt(el.dataset.opt, 10);
+      document.getElementById('btnQuizValidate').disabled = false;
+    };
+  });
+  document.getElementById('btnQuizValidate').onclick = validateQuiz;
+  document.getElementById('btnQuizNext').onclick = nextQuiz;
+  updateProgress();
+}
+
+function validateQuiz() {
+  const i = STATE.currentQuiz, q = QUIZ[i];
+  if (STATE.quizPick === null || STATE.quizAnswered[i]) return;
+  STATE.quizAnswered[i] = true;
+  const ok = STATE.quizPick === q.correct;
+  const points = ok ? 1 : 0;
+  STATE.quizPoints += points;
+  const temps = secondsSince(STATE.questionStartTime);
+
+  document.querySelectorAll('#quizCard .qcm-option').forEach(el => el.classList.add('locked'));
+  const choisi = document.querySelector(`#quizCard .qcm-option[data-opt="${STATE.quizPick}"]`);
+  choisi.classList.remove('selected');
+  choisi.classList.add(ok ? 'correct' : 'incorrect');
+  const fb = document.getElementById('quizFeedback');
+  fb.hidden = false;
+  fb.className = 'feedback ' + (ok ? 'ok' : 'ko');
+  fb.textContent = ok ? '✓ Correct' : '✗ Incorrect';
+
+  postData(ligneResultat({
+    volet: 'Quiz',
+    partie: `Quiz — ${q.id}`,
+    question: q.text,
+    reponse_eleve: q.options[STATE.quizPick],
+    reponse_correcte: q.options[q.correct],
+    points: points,
+    points_max: q.points || 1,
+    tentative: 1,
+    temps_secondes: temps
+  }));
+  creditComp(q, points, 1, temps, false);
+
+  document.getElementById('btnQuizValidate').hidden = true;
+  const next = document.getElementById('btnQuizNext');
+  next.hidden = false;
+  next.textContent = i + 1 < QUIZ.length ? 'Question suivante →' : 'Terminer la théorie →';
+  next.focus();
+  updateProgress();
+}
+
+function nextQuiz() {
+  if (STATE.currentQuiz + 1 < QUIZ.length) {
+    STATE.currentQuiz++;
+    renderQuiz();
+    window.scrollTo(0, 0);
+  } else {
+    finishQuiz();
+  }
+}
+
+function finishQuiz() {
+  postData(ligneResultat({
+    volet: 'Quiz',
+    partie: 'TOTAL — Quiz',
+    question: '',
+    reponse_eleve: '',
+    reponse_correcte: '',
+    points: STATE.quizPoints,
+    points_max: 10,
+    tentative: 1,
+    temps_secondes: secondsSince(STATE.quizStartTime)
+  }));
+  showScreen('screenTransition');
+}
+
+function startExercises() {
+  STATE.exStartTime = Date.now();
+  STATE.currentEx = 0;
+  showScreen('screenExercise');
+  renderExercise();
+}
+
+// ============================================================
+// EXERCICES — rendu
+// ============================================================
+function renderExercise() {
+  const i = STATE.currentEx, ex = EXERCISES[i];
+  EXUI = { pick: null, place: {}, sel: [], qcmPick: null, locked: false };
+  STATE.questionStartTime = Date.now();
+  const max = maxTentatives(ex);
+  const dossier = ex.layout === 'dossier' && ex.context;
+  const cont = document.getElementById('exContainer');
+  cont.className = 'container' + (dossier ? ' container-wide' : '');
+  const pts = `${ex.points} point${ex.points > 1 ? 's' : ''}`;
+  const card = `
+    <section class="question-card" id="exCard">
+      ${ex.context && !dossier ? `<div class="q-context">${ex.context}</div>` : ''}
+      <div class="q-meta"><span class="q-badge">Exercices</span>
+        Question ${i + 1} / ${EXERCISES.length}
+        <span class="q-pts">· ${pts} · ${max === 1 ? '1 tentative' : '2 tentatives'}</span></div>
+      ${ex.data ? `<div class="q-data">${ex.data}</div>` : ''}
+      <div class="q-text">${ex.text}</div>
+      ${ex.qsub ? `<div class="q-sub">${esc(ex.qsub)}</div>` : ''}
+      <div id="exBody"></div>
+      <div class="feedback" id="exFeedback" hidden></div>
+      <div class="q-actions">
+        <button type="button" class="btn-primary" id="btnExValidate" disabled>Valider ma réponse</button>
+        <button type="button" class="btn-primary" id="btnExNext" hidden>Question suivante →</button>
+        <button type="button" class="btn-ghost" id="btnExPass">Passer cette question</button>
+      </div>
+    </section>`;
+  cont.innerHTML = dossier
+    ? `<div class="ex-layout with-dossier"><aside class="dossier" id="exDossier">${ex.context}</aside>${card}</div>`
+    : card;
+  document.getElementById('btnExValidate').onclick = submitExercise;
+  document.getElementById('btnExNext').onclick = nextExercise;
+  document.getElementById('btnExPass').onclick = passExercise;
+  paintExercise(ex);
+  if (ex.type === 'numeric' || ex.type === 'intervat') {
+    document.querySelectorAll('#exBody input').forEach(inp => {
+      inp.addEventListener('input', () => refreshValidate(ex));
+    });
+  }
+  updateProgress();
+  window.scrollTo(0, 0);
+}
+
+function paintExercise(ex) {
+  const body = document.getElementById('exBody');
+  const rendu = {
+    qcm: renderQcmEx, numeric: renderNumeric, classer: renderClasser, pairs: renderPairs,
+    multi: renderMulti, erreurs: renderErreurs, intervat: renderIntervat
+  }[ex.type];
+  body.innerHTML = rendu(ex);
+  body.classList.toggle('is-locked', EXUI.locked);
+  bindExercise(ex);
+  refreshValidate(ex);
+}
+
+function renderQcmEx(ex) {
+  return `<div class="qcm-list">${ex.options.map((o, i) => `
+    <button type="button" class="qcm-option ${EXUI.qcmPick === i ? 'selected' : ''}" data-xopt="${i}">
+      <span class="qcm-letter">${LETTRES[i]}</span><span class="qcm-text">${esc(o)}</span>
+    </button>`).join('')}</div>`;
+}
+
+function renderNumeric(ex) {
+  return `<div class="num-wrap">
+      <input type="text" inputmode="decimal" class="num-input" id="numInput" placeholder="Montant" autocomplete="off" aria-label="Montant">
+      <span class="num-unit">${esc(ex.unit || '')}</span>
+    </div>
+    <div class="entry-hint">Point ou virgule acceptés comme séparateur décimal.</div>`;
+}
+
+/* Tri en colonnes — data-bin sur la COLONNE entière (cahier des charges, 13.13) */
+function renderClasser(ex) {
+  const placedIdx = Object.keys(EXUI.place).map(Number);
+  const reserve = ex.items.map((it, i) => placedIdx.includes(i) ? '' :
+    `<div class="tag ${EXUI.pick === i ? 'picked' : ''}" data-tag="${i}">${esc(it.t)}</div>`).join('');
+  const reserveHTML = reserve.replace(/\s/g, '') === ''
+    ? '<span class="reserve-empty">Toutes les étiquettes sont placées.</span>' : reserve;
+
+  const droppable = (EXUI.pick !== null && !EXUI.locked) ? 'droppable' : '';
+  const bins = ex.bins.map((b, bi) => {
+    const inside = ex.items.map((it, i) => EXUI.place[i] === bi
+      ? `<div class="tag placed" data-placed="${i}">${esc(it.t)}</div>` : '').join('');
+    const content = inside === '' ? '<span class="bin-empty">Dépose ici</span>' : inside;
+    return `<div class="bin ${droppable}" data-bin="${bi}">
+        <div class="bin-title">${esc(b.name)}</div>
+        <div class="bin-drop">${content}</div>
+      </div>`;
+  }).join('');
+
+  return `<div class="reserve" id="reserve">${reserveHTML}</div><div class="bins">${bins}</div>`;
+}
+
+/* Appariement — la ligne entière est la zone de dépôt */
+function renderPairs(ex) {
+  const used = Object.values(EXUI.place);
+  const reserve = ex.bank.map(b => used.includes(b) ? '' :
+    `<div class="tag tag-grid ${EXUI.pick === b ? 'picked' : ''}" data-bank="${esc(b)}">${esc(b)}</div>`).join('');
+  const reserveHTML = reserve.replace(/\s/g, '') === ''
+    ? '<span class="reserve-empty">Toutes les étiquettes sont placées.</span>' : reserve;
+  const droppable = (EXUI.pick !== null && !EXUI.locked) ? 'droppable' : '';
+  const rows = ex.slots.map((s, si) => {
+    const v = EXUI.place[si];
+    const inside = v !== undefined
+      ? `<div class="tag tag-grid placed" data-placed-slot="${si}">${esc(v)}</div>`
+      : '<span class="slot-empty">?</span>';
+    return `<div class="pair-row ${droppable}" data-slot="${si}">
+        <div class="pair-lbl">${esc(s.lbl)}</div>
+        <div class="pair-slot ${v !== undefined ? 'filled' : ''}">${inside}</div>
+      </div>`;
+  }).join('');
+  return `<div class="reserve" id="reserve">${reserveHTML}</div><div class="pairs">${rows}</div>`;
+}
+
+function renderMulti(ex) {
+  return `<div class="multi-list">${ex.options.map((o, i) => `
+    <button type="button" class="multi-option ${EXUI.sel.includes(i) ? 'checked' : ''}" data-mopt="${i}">
+      <span class="mbox"></span><span>${esc(o)}</span>
+    </button>`).join('')}</div>`;
+}
+
+function renderErreurs(ex) {
+  return `<div class="doc"><div class="doc-head">Notes de travail</div>${ex.segments.map((s, i) => `
+    <button type="button" class="seg ${EXUI.sel.includes(i) ? 'flagged' : ''}" data-seg="${i}">
+      <span class="seg-n">${i + 1}</span><span class="seg-t">${esc(s.t)}</span>
+    </button>`).join('')}</div>`;
+}
+
+/* Écran Intervat : cadres à compléter, cadres déjà encodés (valeurs de l'élève), cadres suivants */
+function renderIntervat(ex) {
+  const ordre = INTERVAT_CADRES.map(c => c.id);
+  const premier = Math.min(...ex.edit.map(c => ordre.indexOf(c)));
+  const cadreHTML = c => {
+    const idx = ordre.indexOf(c.id);
+    const etat = ex.edit.includes(c.id) ? 'edit' : (idx < premier ? 'done' : 'future');
+    const rows = c.grilles.map(([g, lbl]) => {
+      let champ;
+      if (etat === 'edit') {
+        champ = `<input type="text" inputmode="decimal" class="iv-input" data-g="${g}" autocomplete="off" aria-label="Grille ${g}">`;
+      } else {
+        const v = etat === 'done' ? (STATE.intervat[g] || '') : '';
+        champ = `<span class="iv-val">${esc(v)}</span>`;
+      }
+      const total = (g === 'XX' || g === 'YY') ? 'iv-total' : '';
+      return `<div class="iv-row ${total}"><span class="iv-badge iv-b-${c.tone}">${g}</span>
+        <span class="iv-lbl">${esc(lbl)}</span>${champ}</div>`;
+    }).join('');
+    return `<div class="iv-cadre iv-${etat}"><div class="iv-ctitle iv-t-${c.tone}">${esc(c.titre)}</div>${rows}</div>`;
+  };
+  const gauche = INTERVAT_CADRES.filter(c => c.col === 0).map(cadreHTML).join('');
+  const droite = INTERVAT_CADRES.filter(c => c.col === 1).map(cadreHTML).join('');
+  return `<div class="iv-window">
+      <div class="iv-bar"><span class="iv-dots"><i></i><i></i><i></i></span>
+        <span class="iv-url">intervat · Déclaration périodique à la TVA</span></div>
+      <div class="iv-head">
+        <div><div class="iv-h1">Déclaration périodique</div><div class="iv-h2">${esc(ex.ivSociete || '')}</div></div>
+        <div class="iv-hr"><div>Numéro de TVA : BE 0000.000.000</div><div>Période : ${esc(ex.ivPeriode || '')}</div></div>
+      </div>
+      <div class="iv-steps"><span class="on"><b>1</b>Encodage</span><span><b>2</b>Validation</span>
+        <span><b>3</b>Signature</span><span><b>4</b>Envoi</span></div>
+      <div class="iv-body"><div class="iv-col">${gauche}</div><div class="iv-col">${droite}</div></div>
+      <div class="iv-foot">Montants en euros, avec deux décimales.</div>
+    </div>`;
+}
+
+// ============================================================
+// EXERCICES — interactions
+// ============================================================
+function bindExercise(ex) {
+  const body = document.getElementById('exBody');
+
+  if (ex.type === 'qcm') {
+    body.querySelectorAll('.qcm-option').forEach(el => {
+      el.onclick = () => {
+        if (EXUI.locked) return;
+        EXUI.qcmPick = parseInt(el.dataset.xopt, 10);
+        paintExercise(ex);
+      };
+    });
+  }
+
+  if (ex.type === 'classer') {
+    body.querySelectorAll('.tag[data-tag]').forEach(el => {
+      el.onclick = () => {
+        if (EXUI.locked) return;
+        const k = parseInt(el.dataset.tag, 10);
+        EXUI.pick = (EXUI.pick === k) ? null : k;
+        paintExercise(ex);
+      };
+    });
+    body.querySelectorAll('.bin[data-bin]').forEach(el => {
+      el.onclick = () => {
+        if (EXUI.locked || EXUI.pick === null) return;
+        EXUI.place[EXUI.pick] = parseInt(el.dataset.bin, 10);
+        EXUI.pick = null;
+        paintExercise(ex);
+      };
+    });
+    /* Étiquette déjà placée : sans sélection → retour en réserve ;
+       avec sélection → le clic remonte à la colonne (dépôt) */
+    body.querySelectorAll('.tag[data-placed]').forEach(el => {
+      el.onclick = (evt) => {
+        if (EXUI.locked) return;
+        if (EXUI.pick !== null) return;
+        evt.stopPropagation();
+        delete EXUI.place[parseInt(el.dataset.placed, 10)];
+        paintExercise(ex);
+      };
+    });
+  }
+
+  if (ex.type === 'pairs') {
+    body.querySelectorAll('.tag[data-bank]').forEach(el => {
+      el.onclick = () => {
+        if (EXUI.locked) return;
+        const b = el.dataset.bank;
+        EXUI.pick = (EXUI.pick === b) ? null : b;
+        paintExercise(ex);
+      };
+    });
+    body.querySelectorAll('.pair-row[data-slot]').forEach(el => {
+      el.onclick = () => {
+        if (EXUI.locked || EXUI.pick === null) return;
+        EXUI.place[parseInt(el.dataset.slot, 10)] = EXUI.pick;   // dépôt ou remplacement
+        EXUI.pick = null;
+        paintExercise(ex);
+      };
+    });
+    body.querySelectorAll('.tag[data-placed-slot]').forEach(el => {
+      el.onclick = (evt) => {
+        if (EXUI.locked) return;
+        if (EXUI.pick !== null) return;                          // remplacement par la ligne
+        evt.stopPropagation();
+        delete EXUI.place[parseInt(el.dataset.placedSlot, 10)];
+        paintExercise(ex);
+      };
+    });
+  }
+
+  if (ex.type === 'multi' || ex.type === 'erreurs') {
+    const sel = ex.type === 'multi' ? '.multi-option' : '.seg';
+    body.querySelectorAll(sel).forEach(el => {
+      el.onclick = () => {
+        if (EXUI.locked) return;
+        const k = parseInt(ex.type === 'multi' ? el.dataset.mopt : el.dataset.seg, 10);
+        EXUI.sel = EXUI.sel.includes(k) ? EXUI.sel.filter(x => x !== k) : EXUI.sel.concat([k]);
+        paintExercise(ex);
+      };
+    });
+  }
+}
+
+function exReady(ex) {
+  switch (ex.type) {
+    case 'qcm': return EXUI.qcmPick !== null;
+    case 'numeric': {
+      const inp = document.getElementById('numInput');
+      return !!inp && inp.value.trim() !== '';
+    }
+    case 'classer': return Object.keys(EXUI.place).length === ex.items.length;
+    case 'pairs': return Object.keys(EXUI.place).length === ex.slots.length;
+    case 'multi': return EXUI.sel.length > 0;
+    case 'erreurs': return true;
+    case 'intervat': return [...document.querySelectorAll('#exBody .iv-input')].some(x => x.value.trim() !== '');
+  }
+  return false;
+}
+
+function refreshValidate(ex) {
+  const b = document.getElementById('btnExValidate');
+  if (b) b.disabled = EXUI.locked || STATE.exAnswered[STATE.currentEx] || !exReady(ex);
+}
+
+// ============================================================
+// EXERCICES — validation (notation partielle, section 16.6)
+// ============================================================
+function validateQcmEx(ex) {
+  const ok = EXUI.qcmPick === ex.correct;
+  return { correct: ok, okEff: ok ? 1 : 0, total: 1,
+           studentStr: ex.options[EXUI.qcmPick], correctStr: ex.options[ex.correct] };
+}
+
+function validateNumeric(ex) {
+  const raw = document.getElementById('numInput').value;
+  const v = parseAmount(raw);
+  const tol = ex.tolerance !== undefined ? ex.tolerance : 0.01;
+  const ok = !isNaN(v) && Math.abs(v - ex.answer) <= tol;
+  return { correct: ok, okEff: ok ? 1 : 0, total: 1,
+           studentStr: isNaN(v) ? raw.trim() : String(v), correctStr: String(ex.answer) };
+}
+
+function validateClasser(ex) {
+  let ok = 0;
+  const parts = ex.items.map((it, k) => {
+    const b = EXUI.place[k];
+    if (b === it.b) ok++;
+    return `${it.t} → ${b !== undefined ? ex.bins[b].name : '?'}`;
+  });
+  return { correct: ok === ex.items.length, okEff: ok, total: ex.items.length,
+           studentStr: `[${ok}/${ex.items.length} corrects] ` + parts.join(' | '),
+           correctStr: ex.items.map(it => `${it.t} → ${ex.bins[it.b].name}`).join(' | ') };
+}
+
+function validatePairs(ex) {
+  let ok = 0;
+  const parts = ex.slots.map((s, k) => {
+    const v = EXUI.place[k];
+    if (v === s.ans) ok++;
+    return `${s.lbl} : ${v !== undefined ? v : '?'}`;
+  });
+  return { correct: ok === ex.slots.length, okEff: ok, total: ex.slots.length,
+           studentStr: `[${ok}/${ex.slots.length} corrects] ` + parts.join(' | '),
+           correctStr: ex.slots.map(s => `${s.lbl} : ${s.ans}`).join(' | ') };
+}
+
+function validateMulti(ex) {
+  const choisis = EXUI.sel.slice().sort((a, b) => a - b);
+  const bonnes = choisis.filter(k => ex.multi.includes(k)).length;
+  const intrus = choisis.length - bonnes;
+  return { correct: bonnes === ex.multi.length && intrus === 0,
+           okEff: Math.max(0, bonnes - intrus), total: ex.multi.length,
+           studentStr: `[${bonnes}/${ex.multi.length} corrects, ${intrus} intrus] ` + choisis.map(k => ex.options[k]).join(' | '),
+           correctStr: ex.multi.map(k => ex.options[k]).join(' | ') };
+}
+
+function validateErreurs(ex) {
+  const attendus = ex.segments.map((s, i) => s.err ? i : -1).filter(i => i >= 0);
+  const choisis  = EXUI.sel.slice().sort((a, b) => a - b);
+  const bonnes = choisis.filter(k => attendus.includes(k)).length;
+  const alertes = choisis.length - bonnes;
+  const fmt = list => list.length ? list.map(i => 'P' + (i + 1)).join(', ') : '(aucune)';
+  return { correct: bonnes === attendus.length && alertes === 0,
+           okEff: Math.max(0, bonnes - alertes), total: attendus.length,
+           studentStr: `[${bonnes}/${attendus.length} corrects, ${alertes} fausse(s) alerte(s)] ` + fmt(choisis),
+           correctStr: fmt(attendus) };
+}
+
+function ordreGrilles() {
+  return INTERVAT_CADRES.reduce((acc, c) => acc.concat(c.grilles.map(g => g[0])), []);
+}
+
+function scoreIntervat(attendu, saisies, tol) {
+  let ok = 0, trop = 0;
+  Object.entries(saisies).forEach(([g, raw]) => {
+    const v = parseAmount(raw);
+    const rempli = raw !== '' && v !== 0;
+    if (g in attendu) {
+      if (!isNaN(v) && Math.abs(v - attendu[g]) <= tol) ok++;
+    } else if (rempli) {
+      trop++;
+    }
+  });
+  const total = Math.max(1, Object.keys(attendu).length);
+  return { ok, trop, total, okEff: Math.max(0, ok - trop),
+           correct: ok === Object.keys(attendu).length && trop === 0 };
+}
+
+function validateIntervat(ex) {
+  const saisies = {};
+  document.querySelectorAll('#exBody .iv-input').forEach(inp => {
+    saisies[inp.dataset.g] = inp.value.trim();
+    STATE.intervat[inp.dataset.g] = inp.value.trim();
+  });
+  const tol = ex.tolerance !== undefined ? ex.tolerance : 0.01;
+  let r = scoreIntervat(ex.answers, saisies, tol);
+  let report = false;
+  if (ex.solde && !r.correct) {
+    // Report d'erreur : un solde cohérent avec les totaux XX et YY encodés par l'élève est accepté
+    const xx = parseAmount(STATE.intervat.XX), yy = parseAmount(STATE.intervat.YY);
+    if (!isNaN(xx) && !isNaN(yy)) {
+      const d = Math.round((xx - yy) * 100) / 100;
+      const coherent = d > 0 ? { '71': d } : (d < 0 ? { '72': -d } : {});
+      const r2 = scoreIntervat(coherent, saisies, tol);
+      if (r2.correct || r2.okEff / r2.total > r.okEff / r.total) { r = r2; report = true; }
+    }
+  }
+  const ordre = ordreGrilles();
+  const remplies = ordre.filter(g => g in saisies && saisies[g] !== '').map(g => `${g}:${saisies[g]}`);
+  const prefixe = `[${r.ok}/${r.total} grilles justes${r.trop ? `, ${r.trop} remplie(s) à tort` : ''}${report ? ", report d'erreur XX/YY" : ''}] `;
+  return { correct: r.correct, okEff: r.okEff, total: r.total,
+           studentStr: prefixe + (remplies.length ? remplies.join(' | ') : '(vide)'),
+           correctStr: ordre.filter(g => g in ex.answers).map(g => `${g}:${ex.answers[g]}`).join(' | ') };
+}
+
+function validateExercise(ex) {
+  return {
+    qcm: validateQcmEx, numeric: validateNumeric, classer: validateClasser, pairs: validatePairs,
+    multi: validateMulti, erreurs: validateErreurs, intervat: validateIntervat
+  }[ex.type](ex);
+}
+
+function correctString(ex) {
+  switch (ex.type) {
+    case 'qcm': return ex.options[ex.correct];
+    case 'numeric': return String(ex.answer);
+    case 'classer': return ex.items.map(it => `${it.t} → ${ex.bins[it.b].name}`).join(' | ');
+    case 'pairs': return ex.slots.map(s => `${s.lbl} : ${s.ans}`).join(' | ');
+    case 'multi': return ex.multi.map(k => ex.options[k]).join(' | ');
+    case 'erreurs': return ex.segments.map((s, i) => s.err ? 'P' + (i + 1) : '').filter(Boolean).join(', ');
+    case 'intervat': return ordreGrilles().filter(g => g in ex.answers).map(g => `${g}:${ex.answers[g]}`).join(' | ');
+  }
+  return '';
+}
+
+function lockExInputs() {
+  EXUI.locked = true;
+  document.querySelectorAll('.question-card input').forEach(inp => inp.disabled = true);
+  document.querySelectorAll('.question-card select').forEach(sel => sel.disabled = true);
+  document.querySelectorAll('.qcm-option').forEach(el => el.classList.add('locked'));
+  const body = document.getElementById('exBody');
+  if (body) {
+    body.classList.add('is-locked');
+    body.querySelectorAll('.bin, .pair-row').forEach(el => el.classList.remove('droppable'));
+  }
+}
+
+function submitExercise() {
+  const i = STATE.currentEx, ex = EXERCISES[i];
+  if (EXUI.locked || STATE.exAnswered[i] || !exReady(ex)) return;
+  const r = validateExercise(ex);
+  STATE.exAttempts[i]++;
+  const tentative = STATE.exAttempts[i];
+  const binaire = (ex.type === 'qcm' || ex.type === 'numeric');
+  const points = r.correct ? ex.points : (binaire ? 0 : pointsPartiels(r.okEff, r.total, ex.points));
+  if (points > STATE.exBest[i]) { STATE.exBest[i] = points; STATE.exBestAttempt[i] = tentative; }
+  const temps = secondsSince(STATE.questionStartTime);
+
+  postData(ligneResultat({
+    volet: 'Exercice',
+    partie: ex.partie,
+    question: stripTags((ex.data ? ex.data + ' ' : '') + ex.text),
+    reponse_eleve: r.studentStr,
+    reponse_correcte: r.correctStr,
+    points: points,
+    points_max: ex.points,
+    tentative: tentative,
+    temps_secondes: temps
+  }));
+
+  if (ex.type === 'qcm') {
+    const el = document.querySelector(`#exBody .qcm-option[data-xopt="${EXUI.qcmPick}"]`);
+    if (el) { el.classList.remove('selected'); el.classList.add(r.correct ? 'correct' : 'incorrect'); }
+  }
+
+  const max = maxTentatives(ex);
+  const fb = document.getElementById('exFeedback');
+  fb.hidden = false;
+  if (r.correct) {
+    fb.className = 'feedback ok';
+    fb.textContent = '✓ Correct';
+    closeExercise(ex, tentative, temps, false);
+  } else if (tentative < max) {
+    fb.className = 'feedback ko';
+    fb.textContent = '✗ Pas correct. Relis ta réponse : il te reste une tentative.';
+  } else {
+    fb.className = 'feedback ko';
+    fb.textContent = max === 1
+      ? "✗ Pas correct. Cette question ne comptait qu'une seule tentative."
+      : '✗ Pas correct. Tu as utilisé tes deux tentatives.';
+    closeExercise(ex, tentative, temps, false);
+  }
+}
+
+function closeExercise(ex, tentative, temps, abandon) {
+  const i = STATE.currentEx;
+  STATE.exAnswered[i] = true;
+  const retenus = STATE.exBest[i];
+  STATE.exPoints += retenus;
+  creditComp(ex, retenus, STATE.exBestAttempt[i] || tentative, temps, abandon);
+  lockExInputs();
+  document.getElementById('btnExValidate').hidden = true;
+  document.getElementById('btnExPass').hidden = true;
+  const next = document.getElementById('btnExNext');
+  next.hidden = false;
+  next.textContent = i + 1 < EXERCISES.length ? 'Question suivante →' : "Terminer l'évaluation";
+  updateProgress();
+}
+
+let passeArme = false, passeMinuterie = null;
+function passExercise() {
+  const btn = document.getElementById('btnExPass');
+  const i = STATE.currentEx, ex = EXERCISES[i];
+  if (STATE.exAnswered[i]) return;
+  if (!passeArme) {
+    passeArme = true;
+    btn.classList.add('armed');
+    btn.textContent = 'Confirmer : passer sans retour';
+    passeMinuterie = setTimeout(() => {
+      passeArme = false;
+      btn.classList.remove('armed');
+      btn.textContent = 'Passer cette question';
+    }, 4000);
+    return;
+  }
+  clearTimeout(passeMinuterie);
+  passeArme = false;
+  const n = STATE.exAttempts[i];
+  const temps = secondsSince(STATE.questionStartTime);
+  postData(ligneResultat({
+    volet: 'Exercice',
+    partie: ex.partie,
+    question: stripTags((ex.data ? ex.data + ' ' : '') + ex.text),
+    reponse_eleve: n === 0 ? '[Passé]' : `[Passé après ${n} tentative${n > 1 ? 's' : ''}]`,
+    reponse_correcte: correctString(ex),
+    points: STATE.exBest[i],
+    points_max: ex.points,
+    tentative: Math.max(1, n),
+    temps_secondes: temps
+  }));
+  const fb = document.getElementById('exFeedback');
+  fb.hidden = false;
+  fb.className = 'feedback neutral';
+  fb.textContent = 'Question passée.';
+  closeExercise(ex, n, temps, true);
+}
+
+function nextExercise() {
+  if (STATE.currentEx + 1 < EXERCISES.length) {
+    STATE.currentEx++;
+    renderExercise();
+  } else {
+    finishEvaluation();
+  }
+}
+
+// ============================================================
+// FIN DE L'ÉVALUATION — lignes TOTAL, Synthèse, complete_eval
+// ============================================================
+function finishEvaluation() {
+  if (!STATE.running) return;
+  stopTimer();
+  const totalPoints = STATE.quizPoints + STATE.exPoints;
+
+  postData(ligneResultat({
+    volet: 'Exercice',
+    partie: 'TOTAL — Exercices',
+    question: '',
+    reponse_eleve: '',
+    reponse_correcte: '',
+    points: STATE.exPoints,
+    points_max: 30,
+    tentative: 1,
+    temps_secondes: secondsSince(STATE.exStartTime)
+  }));
+
+  postData(ligneResultat({
+    volet: 'Évaluation',
+    partie: 'TOTAL — Évaluation',
+    question: '',
+    reponse_eleve: '',
+    reponse_correcte: '',
+    points: totalPoints,
+    points_max: CONFIG.POINTS_MAX,
+    tentative: 1,
+    temps_secondes: STATE.elapsed
+  }));
+
+  // Étape 8 bis — une ligne Synthèse par compétence, avant complete_eval
+  Object.entries(STATE.comp).forEach(([code, c]) => {
+    if (c.nb === 0) return;
+    postData(ligneResultat({
+      volet: 'Synthèse',
+      partie: `${code} — ${COMPETENCES[code].libelle}`,
+      question: String(c.nb),
+      reponse_eleve: niveauComp(c),
+      reponse_correcte: '',
+      points: c.pts,
+      points_max: c.max,
+      tentative: c.reussi1,
+      temps_secondes: c.temps
+    }));
+  });
+
+  postData({ action: 'complete_eval', email: STATE.email, app: CONFIG.APP_NAME });
+
+  STATE.running = false;
+  document.getElementById('totalScore').textContent = fmtPts(totalPoints);
+  document.getElementById('quizScore').textContent = `${fmtPts(STATE.quizPoints)} / 10`;
+  document.getElementById('exScore').textContent = `${fmtPts(STATE.exPoints)} / 30`;
+  document.getElementById('timeScore').textContent = fmtTime(STATE.elapsed);
+  renderCompetences();
+  updateProgress();
+  showScreen('screenSummary');
+  updateSendStatus();
+}
+
+const NIVEAUX = {
+  'Acquis':     { cls: 'lv-ok',  icone: '✔', etiquette: 'Acquis',                 phrase: 'Tu maîtrises.' },
+  'En cours':   { cls: 'lv-mid', icone: '~', etiquette: "En cours d'acquisition", phrase: "Tu comprends, il te manque l'entraînement." },
+  'Non acquis': { cls: 'lv-ko',  icone: '✗', etiquette: 'Non acquis',             phrase: 'À reprendre avec ton professeur.' },
+  'Indice':     { cls: 'lv-na',  icone: '·', etiquette: 'Indice',                 phrase: 'Trop peu de questions pour conclure.' }
+};
+
+function renderCompetences() {
+  const lignes = Object.keys(COMPETENCES).map(code => {
+    const c = STATE.comp[code];
+    if (!c || c.nb === 0) return '';
+    const n = NIVEAUX[niveauComp(c)];
+    const pct = c.max ? Math.round(100 * c.pts / c.max) : 0;
+    return `<div class="comp-row">
+        <div class="comp-top"><span class="comp-code">${code}</span>
+          <span class="comp-lib">${esc(COMPETENCES[code].libelle)}</span>
+          <span class="lv ${n.cls}">${n.icone} ${n.etiquette}</span></div>
+        <div class="comp-bar"><div class="comp-fill ${n.cls}" style="width:${pct}%"></div></div>
+        <div class="comp-foot"><span>${fmtPts(c.pts)} / ${fmtPts(c.max)} points</span><span>${n.phrase}</span></div>
+      </div>`;
+  }).join('');
+  document.getElementById('compList').innerHTML = lignes;
+
+  const rang = { 'Non acquis': 0, 'En cours': 1 };
+  const priorites = Object.keys(COMPETENCES)
+    .map(code => ({ code, c: STATE.comp[code] }))
+    .filter(o => o.c && o.c.nb > 0 && niveauComp(o.c) in rang)
+    .sort((a, b) => (rang[niveauComp(a.c)] - rang[niveauComp(b.c)]) || (a.c.pts / a.c.max - b.c.pts / b.c.max))
+    .slice(0, 3);
+  document.getElementById('prioBox').innerHTML = priorites.length
+    ? `<div class="prio"><h4>Tes priorités de travail</h4><ol>${priorites.map(o => `
+        <li><strong>${esc(COMPETENCES[o.code].libelle)}</strong><br>
+        <span>À relire dans le cours : ${esc(COMPETENCES[o.code].relire)}</span></li>`).join('')}</ol></div>`
+    : '<div class="prio"><h4>Aucune priorité de travail</h4><p>Toutes les compétences de cette évaluation sont acquises.</p></div>';
+}
+
+// Autocontrôle du référentiel (console uniquement)
+auditCompetences();
+</script>
+</body>
+</html>
